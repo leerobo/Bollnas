@@ -1,50 +1,22 @@
-################# VINCENT ######### 444 ##########
+################# Bollnas ######### 14121 ##########
 FROM python:3.12.2-slim-bookworm
 
-EXPOSE 444
-ENV YOURAPPLICATION_SETTINGS=/config.py 
-ENV PYTHONPATH=/Models
-
-# Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE=1
-# Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED=1
-
-# FLASK_ENV set within compose
-
-# ----- Production 
-#ENV FLASK_DEBUG=0
-#ENV FLASK_ENV=production
-# ----- Cert (MTF)
-#ENV FLASK_DEBUG=1
-#ENV FLASK_ENV=MTF
-# ----- Staged (Developement)
-#ENV FLASK_DEBUG=1
-#ENV FLASK_ENV=staged
-# ----- Developement
-#ENV FLASK_DEBUG=1
-#ENV FLASK_ENV=development
+# Controller
+EXPOSE 14121   
+#ENV YOURAPPLICATION_SETTINGS=/config.py 
+#ENV PYTHONPATH=/Models
 
 # Install pip requirements
-WORKDIR /VINcentAPP
+WORKDIR /app
 COPY /requirements.txt .
 COPY /README.md .
-RUN python3 -m pip install -r /VINcentAPP/requirements.txt --no-cache-dir
+RUN python3 -m pip install -r /app/requirements.txt --no-cache-dir
 
 # Package up Folders 
-WORKDIR /VINcentAPP
-COPY VINcent         /VINcentAPP/VINcent
-COPY /SQL            /VINcentAPP/SQL
-COPY /Models         /VINcentAPP/Models
-COPY /DataStructures /VINcentAPP/DataStructures
+WORKDIR /app
+COPY Bollnas         /app/Bollnas
 
-# Dont upload Keys/config - These are server related
-#RUN mkdir -p            /VINcentAPP/Config
-#RUN mkdir -p            /VINcentAPP/Cert
-#COPY /Config/readme.md  /VINcentAPP/Config
-#COPY /Cert/readme.md    /VINcentAPP/Cert
-RUN rm -rf /Cert/*
-
-
-WORKDIR /VINcentAPP
-CMD ["gunicorn","-w","4","-b","0.0.0.0:444", "VINcent:create_app()"]
+WORKDIR /app
+# Run Controller 
+CMD ["gunicorn","-w","4","-b","0.0.0.0:444", "app:create_app()"]
+# Run sensorHub

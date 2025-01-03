@@ -17,16 +17,13 @@ def ping_Info():
     rtn.devices=[{"Message":"None Attached"}]   
     return rtn
 
-
 @app.get("/sensors")         # Port Ping
 def getSensors():
     rtn=dsSensorHub.respSensors()
     return rtn
 
-
 @app.get("/sensor/{item_id}")         # Port Ping
 def getSensor(item_id: str | None = None):
     rtn=dsSensorHub.respSensor(id=item_id,description="Boiler Temp",type=1,value=0)
     return rtn
-
 
