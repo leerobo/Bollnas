@@ -1,0 +1,21 @@
+### Required for Unit Testing not for Offical Release
+#Cert/
+#Config
+
+### VS Code ###
+.vscode/
+.vscode/*
+.vscode/settings.json
+
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
+*.pyc
+*.bak
+path
+venv
+Cert/mccencrypt_staged_card_evry_com/mccencrypt_staged_card_evry_com.pem
+Cert/mccencrypt_staged_card_evry_com/privkey.pem
+Cert/mccsign_staged_card_evry_com/mccsign_staged_card_evry_com.pem
+Cert/mccsign_staged_card_evry_com/privkey.pem
+Cert/SESSION/privkey.pem
