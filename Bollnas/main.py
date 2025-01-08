@@ -30,17 +30,21 @@ app = FastAPI(
 )
 
 # Load router URL paths depending on the settings
-api_router = APIRouter(prefix=get_settings().api_root)
+#api_router = APIRouter(prefix=get_settings().api_root)
 if get_settings().load_controller:
-   print('Load : Controller')
-   api_router.include_router(controller.router)
+   rprint("[blue]INFO:     [/blue][bold]Loaded Controller Routing")
+   app.include_router(controller.router)
+
 if get_settings().load_sensorhub:
-   print('Load : SensorHub')
-   api_router.include_router(sensorhub.router)
+   rprint("[blue]INFO:     [/blue][bold]Loaded SensorHub")
+   app.include_router(sensorhub.router)
 
 if not get_settings().load_sensorhub and not get_settings().load_controller:
    print('Load : No Router Loaded ')
-   api_router.include_router(home.router)
+   rprint("[red]ERROR:   [/red][bold]No Routing Loadded")
+   app.include_router(home.router)
+
+static_dir = get_project_root() / "static"
 
 # set up CORS
 cors_list = (get_settings().cors_origins).split(",")
