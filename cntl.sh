@@ -1,1 +1,1 @@
-fastapi dev Bollnas/SensorHub.py --port 14122
+fastapi dev Bollnas/main.py --port 14122

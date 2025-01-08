@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter
 
-from config.settings import get_settings
+from Bollnas.config.settings import get_settings
 import controller, sensorhub, home
 api_router = APIRouter(prefix=get_settings().api_root)
 

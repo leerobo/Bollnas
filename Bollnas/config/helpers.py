@@ -7,10 +7,9 @@ from pathlib import Path
 
 import rtoml
 
-
 def get_project_root() -> Path:
     """Return the full path of the project root."""
-    return (Path(str(resources.files("app"))) / "..").resolve()
+    return (Path(str(resources.files("Bollnas"))) / "..").resolve()
 
 
 def get_toml_path() -> Path:

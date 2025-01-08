@@ -9,16 +9,16 @@ from pathlib import Path  # noqa: TC003
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from app.config.helpers import get_project_root
+from Bollnas.config.helpers import get_project_root
 
-try:
-    from .metadata import custom_metadata
-except ModuleNotFoundError:  # pragma: no cover
-    print(
-        "The metadata file could not be found, it may have been deleted.\n"
-        "Please run 'api-admin custom init' to regenerate defaults."
-    )
-    sys.exit(1)
+# try:
+#     from .metadata import custom_metadata
+# except ModuleNotFoundError:  # pragma: no cover
+#     print(
+#         "The metadata file could not be found, it may have been deleted.\n"
+#         "Please run 'api-admin custom init' to regenerate defaults."
+#     )
+#     sys.exit(1)
 
 
 class Settings(BaseSettings):
@@ -35,11 +35,14 @@ class Settings(BaseSettings):
     env_file: str = str(project_root / ".env")
     model_config = SettingsConfigDict(env_file=env_file)
 
-    base_url: str = "http://localhost:8000"
+    base_url: str = "http://localhost:14120"
     api_root: str = ""
     no_root_route: bool = False
 
     cors_origins: str = "*"
+
+    load_controller: bool=True
+    load_sensorhub: bool=True
 
     # Setup the Postgresql database.
     db_user: str = "my_db_username"
@@ -58,16 +61,16 @@ class Settings(BaseSettings):
     test_db_name: str = "api-template-test"
 
     # JTW secret Key
-    secret_key: str = "32DigitsofSecretNumbers"  # noqa: S105
-    access_token_expire_minutes: int = 120
+    secret_key: str = "1F24921CEADCE4E0113C84EFA60A9802"  # noqa: S105
+    access_token_expire_minutes: int = 7200
 
     # Custom Metadata
-    api_title: str = custom_metadata.title
-    api_description: str = custom_metadata.description
-    repository: str = custom_metadata.repository
-    contact: dict[str, str] = custom_metadata.contact
-    license_info: dict[str, str] = custom_metadata.license_info
-    year: str = custom_metadata.year
+    api_title: str = 'The Bollnas Project'
+    api_description: str = """ RPI controller and Sensor Hub Fast API  """
+    # repository: str = custom_metadata.repository
+    contact: dict[str, str] =  {"Author":"lee@ssshhhh.com"}
+    # license_info: dict[str, str] = custom_metadata.license_info
+    year: str = "2025"
 
     # email settings
     mail_username: str = "test_username"
@@ -75,7 +78,7 @@ class Settings(BaseSettings):
     mail_from: str = "test@email.com"
     mail_port: int = 587
     mail_server: str = "mail.server.com"
-    mail_from_name: str = "FASTAPI Template"
+    mail_from_name: str = "The Bollnas Project"
     mail_starttls: bool = True
     mail_ssl_tls: bool = False
     mail_use_credentials: bool = True

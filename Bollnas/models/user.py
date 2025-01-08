@@ -3,8 +3,8 @@
 from sqlalchemy import Boolean, Enum, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.database.db import Base
-from app.models.enums import RoleType
+from Bollnas.database.db import Base
+from Bollnas.models.enums import RoleType
 
 
 class User(Base):

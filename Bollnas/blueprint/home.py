@@ -6,8 +6,8 @@ from fastapi import APIRouter, Header, Request
 from fastapi.templating import Jinja2Templates
 from starlette.templating import _TemplateResponse
 
-from app.config.helpers import get_api_version, get_project_root
-from app.config.settings import get_settings
+from Bollnas.config.helpers import get_api_version, get_project_root
+from Bollnas.config.settings import get_settings
 
 router = APIRouter()
 

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import select
 
-from app.models.user import User
+from Bollnas.models.user import User
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Sequence

@@ -10,25 +10,25 @@ from passlib.context import CryptContext
 from sqlalchemy import delete, update
 from sqlalchemy.exc import IntegrityError
 
-from app.config.settings import get_settings
-from app.database.helpers import (
+from Bollnas.config.settings import get_settings
+from Bollnas.database.helpers import (
     add_new_user_,
     get_all_users_,
     get_user_by_email_,
     get_user_by_id_,
 )
-from app.managers.auth import AuthManager
-from app.managers.email import EmailManager
-from app.models.user import User
-from app.schemas.email import EmailTemplateSchema
+from Bollnas.managers.auth import AuthManager
+from Bollnas.managers.email import EmailManager
+from Bollnas.models.user import User
+from Bollnas.schemas.email import EmailTemplateSchema
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Sequence
 
     from sqlalchemy.ext.asyncio import AsyncSession
 
-    from app.models.enums import RoleType
-    from app.schemas.request.user import (
+    from Bollnas.models.enums import RoleType
+    from Bollnas.schemas.request.user import (
         UserChangePasswordRequest,
         UserEditRequest,
     )

@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase
 
-from app.config.settings import get_settings
+from Bollnas.config.settings import get_settings
 
 DATABASE_URL = (
     "postgresql+asyncpg://"

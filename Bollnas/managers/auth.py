@@ -10,14 +10,14 @@ from pydantic import EmailStr
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.config.settings import get_settings
-from app.database.db import get_database
-from app.database.helpers import get_user_by_id_
-from app.managers.email import EmailManager
-from app.models.enums import RoleType
-from app.models.user import User
-from app.schemas.email import EmailTemplateSchema
-from app.schemas.request.auth import TokenRefreshRequest
+from Bollnas.config.settings import get_settings
+from Bollnas.database.db import get_database
+from Bollnas.database.helpers import get_user_by_id_
+from Bollnas.managers.email import EmailManager
+from Bollnas.models.enums import RoleType
+from Bollnas.models.user import User
+from Bollnas.schemas.email import EmailTemplateSchema
+from Bollnas.schemas.request.auth import TokenRefreshRequest
 
 
 class ResponseMessages:
