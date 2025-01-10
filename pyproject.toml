@@ -1,11 +1,11 @@
 [project]
 name = "api-template"
-version = "0.5.4"
+version = "0.1.0"
 description = "Run 'api-admin custom metadata' to change this information."
-authors = [{ name = "Grant Ramsay", email = "seapagan@gmail.com" }]
+authors = [{ name = "Lee Robinson", email = "lee@ssshhhh.com" }]
 license = "MIT"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 classifiers = ["Private :: Do Not Upload"]
 dependencies = [
   "alembic>=1.14.0",

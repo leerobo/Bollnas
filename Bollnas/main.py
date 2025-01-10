@@ -1,6 +1,6 @@
 """Main file for the FastAPI Template."""
 
-import sys
+import sys,os
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from typing import Any
@@ -10,13 +10,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from rich import print as rprint
 from sqlalchemy.exc import SQLAlchemyError
+from pathlib import Path 
 
 from Bollnas.config.helpers import get_api_version, get_project_root
-from Bollnas.config.settings import get_settings
+from Bollnas.config.settings import get_settings,get_controller_settings,get_sensorhub_settings
 from Bollnas.database.db import async_session
 
 from fastapi import APIRouter
 from Bollnas.blueprint import controller, sensorhub, home, config_error
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 app = FastAPI(
     title=get_settings().api_title,
@@ -27,19 +29,25 @@ app = FastAPI(
     contact=get_settings().contact,
     version=get_api_version(),
     swagger_ui_parameters={"defaultModelsExpandDepth": 0},
+    
 )
+#  try:
+#     get_settings().controller_settings= SettingsConfigDict(env_file=Path(get_settings().project_root / (".env" + os.environ['LOADTYPE'].lower())))
+#     print(get_settings().load_type)
+#  except Exception as e:
+#     rprint("[red]ERROR:    [/red][bold]Missing .env{} file".format(os.environ['LOADTYPE'].lower() ))
+#     sys.exit(1)
 
 # Load router URL paths depending on the settings
-#api_router = APIRouter(prefix=get_settings().api_root)
-if get_settings().load_controller:
-   rprint("[blue]INFO:     [/blue][bold]Loaded Controller Routing")
+if os.environ['LOADTYPE'].lower() == 'controller':
+   rprint("[blue]INFO:     [/blue][bold]Loaded Controller Routing",get_controller_settings().controller_name)
    app.include_router(controller.router)
 
-if get_settings().load_sensorhub:
-   rprint("[blue]INFO:     [/blue][bold]Loaded SensorHub")
+elif os.environ['LOADTYPE'].lower() == 'sensorhub':
+   rprint("[blue]INFO:     [/blue][bold]Loaded SensorHub", get_sensorhub_settings().sensorhub_name)
    app.include_router(sensorhub.router)
 
-if not get_settings().load_sensorhub and not get_settings().load_controller:
+else:
    print('Load : No Router Loaded ')
    rprint("[red]ERROR:   [/red][bold]No Routing Loadded")
    app.include_router(home.router)

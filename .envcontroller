@@ -1,0 +1,5 @@
+
+# Load controller or sensorhub routing 
+CONTROLLER_NAME="Bollnas"
+CONTROLLER_DESCRIPTION="The Bollnas Project"
+

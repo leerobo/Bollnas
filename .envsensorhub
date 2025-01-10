@@ -1,0 +1,5 @@
+
+# SensorHub Information 
+SENSORHUB_NAME="Boiler"
+SENSORHUB_LOCATION="Garage"
+SENSORHUB_RELAYS=[{"pin":8,"name":"Water Pump","state":0},{"pin":9,"name":"Smoke Extractor","state":0}]
