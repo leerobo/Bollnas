@@ -15,3 +15,19 @@ The sensorshub polls the sensors and relay pins and stores the settings ready fo
 - .envcontroller : Controller Setup Details
 - .envsensorhub  : SensorHub Setup Details
 - .env : Setup package details used by Framework
+
+
+### Setup
+
+Create a Venv area on the RPI
+` 
+sudo python3 -m venv venv
+source  venv/bin/activate
+`
+
+Load up the enviroment
+`
+python3 -m pip install -r requirements.txt
+`
+
+

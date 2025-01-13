@@ -1,13 +1,14 @@
 """Main file for the FastAPI Template."""
 
 import sys,os
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator,AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Any
 
-from fastapi import FastAPI
+from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+
 from rich import print as rprint
 from sqlalchemy.exc import SQLAlchemyError
 from pathlib import Path 
@@ -16,9 +17,14 @@ from Bollnas.config.helpers import get_api_version, get_project_root
 from Bollnas.config.settings import get_settings,get_controller_settings,get_sensorhub_settings
 from Bollnas.database.db import async_session
 
-from fastapi import APIRouter
-from Bollnas.blueprint import controller, sensorhub, home, config_error
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from Bollnas.blueprint import controller, sensorhub, home
+
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
+    
+from redis import asyncio as aioredis
+
 
 app = FastAPI(
     title=get_settings().api_title,
@@ -29,8 +35,15 @@ app = FastAPI(
     contact=get_settings().contact,
     version=get_api_version(),
     swagger_ui_parameters={"defaultModelsExpandDepth": 0},
-    
 )
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    redis = aioredis.from_url("redis://localhost")
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+    yield
+ 
 #  try:
 #     get_settings().controller_settings= SettingsConfigDict(env_file=Path(get_settings().project_root / (".env" + os.environ['LOADTYPE'].lower())))
 #     print(get_settings().load_type)

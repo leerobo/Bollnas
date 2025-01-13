@@ -16,6 +16,7 @@ import socket,requests
 
 def scan_lan():
     Attached_list={}
+    print('pws',get_settings().netgear_password )
     if get_settings().netgear_password != "":
       rprint("[yellow]TASK:     [/yellow][bold]Logon Netgear Router",get_settings().dns )
       netgear = Netgear(password=get_settings().netgear_password)
