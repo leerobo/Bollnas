@@ -15,7 +15,6 @@ async def set_cache(data: Controller, keys='bollnas',dur=120):
 
 async def get_cache(keys='bollnas') -> dict:
     try:
-                 
        v = r.get(keys)
        if v is not None:
           return json.loads(v.decode('utf-8'))
@@ -26,10 +25,10 @@ async def get_cache(keys='bollnas') -> dict:
 
  # Test setup only 
 def test_hub() -> Controller:
-    sensor1 = Sensor(id='1',description='Temperature',type=1,value=20)
-    sensor2 = Sensor(id='2',description='Temperature',type=1,value=30)
-    sensor3 = Sensor(id='1',description='Temperature',type=1,value=25)
-    hub1 = Sensorhub(name='Boiler',mac='00:00:00:00:00:01',ip='192.168.0.10',sensors=[sensor1,sensor2])
-    hub2 = Sensorhub(name='Boiler',mac='00:00:00:00:00:02',ip='192.168.0.11',sensors=[sensor3])
+    sensor1 = Sensor(name='Tank Hi',id='1',description='Temperature',type=1,value=20)
+    sensor2 = Sensor(name='Tank Med',id='2',description='Temperature',type=1,value=30)
+    sensor3 = Sensor(name='Tank Low',id='1',description='Temperature',type=1,value=25)
+    hub1 = Sensorhub(name='Boiler1',mac='00:00:00:00:00:01',ip='192.168.0.10',sensors=[sensor1,sensor2])
+    hub2 = Sensorhub(name='Boiler2',mac='00:00:00:00:00:02',ip='192.168.0.11',sensors=[sensor3])
     return Controller(name='Bollnas',hubs=[hub1,hub2])
   

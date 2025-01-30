@@ -4,6 +4,7 @@ from pydantic import BaseModel, ConfigDict, Field
 import datetime
 
 class Sensor(BaseModel):
+    name: str
     id: str  
     description: str 
     type: int 

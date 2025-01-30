@@ -42,6 +42,7 @@ def scan_lan():
     # find the SenorHubs
     hubs={}
     for i in Attached_list:
+      rprint('Scanner List',Attached_list[i])
       rprint("[purple]DEBUG:    [/purple][bold]Scanning",Attached_list[i].ip,'-',get_settings().sensorHub_port)
       try:
         x = requests.get('http://{}:{}/info'.format(Attached_list[i].ip,get_settings().sensorHub_port ),timeout=1)
