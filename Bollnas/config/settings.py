@@ -112,6 +112,9 @@ class Settings(BaseSettings):
 
     project_description: str = ""
 
+    # Wire1 Directory 
+    wire1Dir: str = "/sys/bus/w1/devices/"
+
 
     # controller_settings: Optional[controllerType] = Field(default=None)
     # sensorhub_settings: Optional[sensorhubType]  = Field(default=sensorhubType )

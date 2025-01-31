@@ -4,11 +4,12 @@ from __future__ import annotations
 from rich import print as rprint
 from Bollnas.cachecontrol.redis import get_cache
 from prometheus_client import metrics,Gauge
+import RPi.GPIO as gpio                 # for general GPIO control over relays
 
 #from Bollnas.config.settings import get_settings
 
-
 async def get_sensors():
+    """ using the latest Polled data, setup the Sensor Client using promethues """
     try:
       sensors = await get_cache('bollnas')
     except Exception as e:

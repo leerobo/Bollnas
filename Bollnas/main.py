@@ -19,9 +19,9 @@ from Bollnas.database.db import async_session
 
 from Bollnas.blueprint import controller, sensorhub, home
 
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
+# from fastapi_cache import FastAPICache
+# from fastapi_cache.backends.redis import RedisBackend
+# from fastapi_cache.decorator import cache
     
 from redis import asyncio as aioredis
 
@@ -38,11 +38,11 @@ app = FastAPI(
 )
 
 
-@asynccontextmanager
-async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    redis = aioredis.from_url("redis://localhost")
-    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
-    yield
+# @asynccontextmanager
+# async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+#     redis = aioredis.from_url("redis://localhost")
+#     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+#     yield
  
 #  try:
 #     get_settings().controller_settings= SettingsConfigDict(env_file=Path(get_settings().project_root / (".env" + os.environ['LOADTYPE'].lower())))

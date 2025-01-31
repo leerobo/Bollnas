@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Optional
 
 from fastapi import BackgroundTasks  # noqa: TC002
 from fastapi.responses import JSONResponse
-from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
+#from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 
 from rich import print as rprint
 

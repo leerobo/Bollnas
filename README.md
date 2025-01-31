@@ -30,4 +30,29 @@ Load up the enviroment
 python3 -m pip install -r requirements.txt
 `
 
+### Installing on a device
+you can install Controller on a RPI or any linux server as a servicectl or docker image
+the sensorhub is designed to be installed on a RPI only, due to the GPIO requirements
+
+You can install both controller and sensorhub on the same RPI,  recommend a RPI5 or above 
+in docker containers.
+
+#### Controller
+if running via docker,  run dockerbuild to get the latest image
+`
+docker compose 
+`
+
+if running via systemctl then pull the latest github source 
+
+once installed amend the .venvcontroller variables
+`
+CONTROLLER_NAME="Bollnas"
+CONTROLLER_DESCRIPTION="The Bollnas Project"
+`
+
+
+### Reference
+- GitHub : leerobo/bollnas
+- Docker Hub :
 
