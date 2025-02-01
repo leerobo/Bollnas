@@ -115,6 +115,9 @@ class Settings(BaseSettings):
     # Wire1 Directory 
     wire1Dir: str = "/sys/bus/w1/devices/"
 
+    # relays BCD
+    GPIOrelays: list[int] = [12,16,20,21]
+
 
     # controller_settings: Optional[controllerType] = Field(default=None)
     # sensorhub_settings: Optional[sensorhubType]  = Field(default=sensorhubType )

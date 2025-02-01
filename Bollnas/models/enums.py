@@ -40,3 +40,28 @@ class SensorMeasurement(Enum):
     kelvin   = "Kelvin"    
     percent  = "Percentage"       
     number   = "Number"
+
+# Pin controllers
+
+class GPIOdirection(Enum):
+    """ GPIO Direction """
+    inn      = "inn"
+    out      = "out"    
+    pwm      = 'pwm'
+
+class GPIOdeviceAttached(Enum):
+    """ GPIO Attached Device """
+    unknown  = "unknown"
+    relay    = "relay"
+
+class GPIOstatus(Enum):
+    """ GPIO polling Status """
+    error    = "inError"
+    ok       = "ok"
+    unknown  = "unknown"
+
+class GPIOtask(Enum):
+    """ GPIO Task """
+    toggle      = "toggle"
+    on          = "on"   
+    off         = "off"   

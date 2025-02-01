@@ -20,34 +20,33 @@ from array import array
 #import Adafruit_DHT
 import logging
 import socketserver
+from typing import Union
 
 from Bollnas.config.settings import get_settings,get_sensorhub_settings
 import Bollnas.schemas.response.sensors as Schema
+from Bollnas.schemas.response.gpio import GPIOresponse
+from Bollnas.schemas.request.gpio import GPIOrequest
 import Bollnas.models.enums as enums
 
 from rich import print as rprint
 
-
-
- 
-configPOLL = configparser.ConfigParser()
-configPINS = configparser.ConfigParser()
-KillSwitch = True
-POLLlst={"DEF":0}
-GaugeW1={"DEF":20}   # W1 Sensors
-GaugePIN={"DEF":20}  # Activate Pins
-Vers='1.0.2'
-MID='XX'
-#global PortNo
-#global POLLgap
-
+# configPOLL = configparser.ConfigParser()
+# configPINS = configparser.ConfigParser()
+# KillSwitch = True
+# POLLlst={"DEF":0}
+# GaugeW1={"DEF":20}   # W1 Sensors
+# GaugePIN={"DEF":20}  # Activate Pins
+# Vers='1.0.2'
+# MID='XX'
+# #global PortNo
+# #global POLLgap
 
 async def poll(): 
-
-    wire1Sensors=pollWire1()
-    rprint('Wire-1 Sensors',wire1Sensors)
-    #GPIOsettings=pollGPIO()
-    #rprint('GPIO Settings',GPIOsettings)    
+    rtn={}
+    rtn['wire1Sensors']=pollWire1()
+    rtn['GPIOsettings']=pollGPIO()
+    rprint('Poll :',rtn)    
+    return rtn
           
 # ---------------- WIRE 1 find and read --------------------
 
@@ -71,7 +70,7 @@ def pollWire1() -> list[Schema.Sensor]:
                                  measurement=enums.SensorMeasurement.c, 
                                  platform=enums.SensorPlatform.wire1, 
                                  value=sensorVal) 
-                               )
+                                 )
 
     return wire1Sensors
 def readWire1(SID) -> float:
@@ -95,16 +94,80 @@ def readWire1(SID) -> float:
 
 # ---------------- GPIO Pin Reads --------------------
 
-# # Return Pin ON/OFF status
-# def RelayGET(PIN):
-#     GPIO.setwarnings(False) 
-#     GPIO.setmode(GPIO.BCM)
-#     GPIO.setup(int(PIN), GPIO.OUT)
-#     if GPIO.input(int(PIN)):
-#         return 1  
-#     else:
-#         return 0   
-#     sys.stdout.flush()
+# Return Pin ON/OFF status
+def pollGPIO()  -> list[GPIOresponse]:
+    rprint('[yellow]GPIO Scanning')
+    rtn=[]
+    try:
+        GPIO.setwarnings(False) 
+        GPIO.setmode(GPIO.BCM)
+        for relay in get_settings().GPIOrelays:
+            # GPIO.setup(int(relay), GPIO.OUT)
+            rtn.append( GPIOread( GPIOresponse(pin=relay,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out)  ) )
+    except Exception as ex:
+        rprint('[red]Sensor {} Read Error : {}'.format(relay,ex) )
+        rtn.append( GPIOread( GPIOresponse(pin=relay,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out,
+                                           status=enums.GPIOstatus.error,value=-86
+                                           )  ) )
+    return rtn
+
+
+# Control GPIO Pins 
+def GPIOread(pin: GPIOresponse) -> GPIOresponse:
+    GPIO.setwarnings(False) 
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(pin.pin, GPIO.OUT)
+    try:
+       pin.value = GPIO.input(pin.pin)
+       pin.status = enums.GPIOstatus.ok
+       return pin
+    except Exception as ex:
+       rprint('[red]GPIO Read Error ',pin.pin,':',ex)
+       pin.value = -85
+       pin.status = enums.GPIOstatus.error
+       return pin
+
+def GPIOset(pinReq:GPIOresponse,task:enums.GPIOtask) -> GPIOresponse:
+    currentPin=GPIOread(pinReq)
+    if currentPin.status != enums.GPIOstatus.ok:      return currentPin 
+    GPIO.setup(pinReq.pin, GPIO.OUT)
+    try:
+       if   task == enums.GPIOtask.toggle and currentPin.value == 0 :
+                GPIO.output(pinReq.pin, 1)
+       elif task == enums.GPIOtask.toggle and currentPin.value == 1 :
+                GPIO.output(pinReq.pin, 0)
+       elif task == enums.GPIOtask.on :
+                GPIO.output(pinReq.pin, 0)
+       else :   GPIO.output(pinReq.pin, 1)
+       return  GPIOread(pinReq)
+    
+    except Exception as ex:
+        rprint('[red]Sensor {} Set Error : {}'.format(pinReq,ex) )
+        currentPin.status=enums.GPIOstatus.error
+        currentPin.value=-86
+        return currentPin
+    
+
+def GPIOcontrol(pin):
+    rprint('[yellow]GPIO Control')
+    try:
+        GPIO.setwarnings(False) 
+        GPIO.setmode(GPIO.BCM)
+        rprint('[yellow]Relay {} Status {}'.format(pin,GPIO.input(int(pin))) )
+
+        return -999
+    except Exception as ex:
+        rprint('[red]Sensor {} Read Error : {}'.format(pin,ex) )
+        return -999         
+
+    # GPIO.setwarnings(False) 
+    # GPIO.setmode(GPIO.BCM)
+    # GPIO.setup(int(PIN), GPIO.OUT)
+    # if GPIO.input(int(PIN)):
+    #     return 1  
+    # else:
+    #     return 0   
+    # sys.stdout.flush()
 
 # # set Pin
 # def RelaySET(PIN,tsk):

@@ -16,6 +16,9 @@ from pathlib import Path
 from Bollnas.config.helpers import get_api_version, get_project_root
 from Bollnas.config.settings import get_settings,get_controller_settings,get_sensorhub_settings
 from Bollnas.database.db import async_session
+import Bollnas.models.enums as enums
+from Bollnas.managers import pollSensors
+from Bollnas.schemas.response.gpio  import GPIOresponse
 
 from Bollnas.blueprint import controller, sensorhub, home
 
@@ -25,6 +28,12 @@ from Bollnas.blueprint import controller, sensorhub, home
     
 from redis import asyncio as aioredis
 
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    rprint('Reset Relays :',get_settings().GPIOrelays)
+    for relay in get_settings().GPIOrelays:
+        pollSensors.GPIOset( GPIOresponse(pin=relay,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out), task=enums.GPIOtask.off )
+    yield
 
 app = FastAPI(
     title=get_settings().api_title,
@@ -35,21 +44,9 @@ app = FastAPI(
     contact=get_settings().contact,
     version=get_api_version(),
     swagger_ui_parameters={"defaultModelsExpandDepth": 0},
+    lifespan=lifespan
 )
 
-
-# @asynccontextmanager
-# async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-#     redis = aioredis.from_url("redis://localhost")
-#     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
-#     yield
- 
-#  try:
-#     get_settings().controller_settings= SettingsConfigDict(env_file=Path(get_settings().project_root / (".env" + os.environ['LOADTYPE'].lower())))
-#     print(get_settings().load_type)
-#  except Exception as e:
-#     rprint("[red]ERROR:    [/red][bold]Missing .env{} file".format(os.environ['LOADTYPE'].lower() ))
-#     sys.exit(1)
 
 # Load router URL paths depending on the settings
 if os.environ['LOADTYPE'].lower() == 'controller':
