@@ -8,17 +8,18 @@ The sensorshub polls the sensors and relay pins and stores the settings ready fo
 
 | Packages | Description | 
 | ----------- | ----------- |
-| FastAPI | Python API framework |
+| FastAPI | Python API Framework |
+| pydantic | Data Structure Framework |
+| RPI.GPIO | Hub GPIO Framework |
+| redis | Caching framework |
+
 
 ### Configs
-
 - .envcontroller : Controller Setup Details
 - .envsensorhub  : SensorHub Setup Details
 - .env : Setup package details used by Framework
 
-
 ### Setup
-
 Create a Venv area on the RPI
 ` 
 sudo python3 -m venv venv
@@ -29,8 +30,8 @@ Load up the enviroment
 `
 python3 -m pip install -r requirements.txt
 `
-
 ### Installing on a device
+
 you can install Controller on a RPI or any linux server as a servicectl or docker image
 the sensorhub is designed to be installed on a RPI only, due to the GPIO requirements
 
@@ -50,6 +51,10 @@ once installed amend the .venvcontroller variables
 CONTROLLER_NAME="Bollnas"
 CONTROLLER_DESCRIPTION="The Bollnas Project"
 `
+
+#### Timers & Events
+If you wish to automate the results then use the auto.sh as a template to run in the background
+polling the controller .  Useful to control relays, lights depending on the polled results.
 
 
 ### Reference

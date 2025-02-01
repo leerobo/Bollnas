@@ -18,3 +18,4 @@ class Ping(BaseModel):
     description: str                      = Field(default=None,json_schema_extra={ 'description': 'SensorHub Description'} ) 
     devicetype: enums.DeviceType          = Field(default=enums.DeviceType.unknown,json_schema_extra={ 'description': 'Sensor Value'} )  
     devices:  Sensors                     = Field(default=None,json_schema_extra={ 'description': 'Sensors'} ) 
+    relays: list                          = Field(default=[],json_schema_extra={ 'description': 'Relay GPIO'} ) 

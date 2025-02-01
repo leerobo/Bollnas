@@ -30,7 +30,8 @@ router = APIRouter(tags=["Controller"])
 def ping():
     rtn= Ping(name=get_settings().api_title, 
                 description=get_settings().api_description, 
-                devicetype=enums.DeviceType.sensorhub
+                devicetype=enums.DeviceType.sensorhub,
+                relays=get_settings().GPIOrelays
                )
     print(rtn)
     return rtn
