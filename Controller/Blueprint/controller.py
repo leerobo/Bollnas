@@ -48,13 +48,10 @@ router = APIRouter(tags=["Controller"])
     response_model=Hubs.Hubs
 )
 async def scan():
-    devices = scan_lan()
-    for device in devices:
-       print(f"IP: {device['ip']}, MAC: {device['mac']}")
-       
-    return Hubs.Hubs(count=len(devices),Hubs=list(devices))
+    Hubs = scan_lan()
+    await redis.set_cache(data=Hubs,keys='bollnas')
+    return Hubs
     # TODO: store hubs to a generic thread safe area 
-    
 
 @router.get("/hubs",status_code=status.HTTP_200_OK,
     name="show attached active hubs",
@@ -62,8 +59,15 @@ async def scan():
 )
 async def scan_hubs() -> Controller:
     try:
-       c = await redis.get_cache('bollnas') 
+       if await redis.exists('bollnas') == 0:
+          Hubs = scan_lan()
+          await redis.set_cache(data=Hubs,keys='bollnas')
+          c = Hubs
+          rprint('-------------------------\n',c,'\n-------------------------------')
+       else:   
+          c = await redis.get_cache('bollnas') 
        return Controller.model_validate(c)
     except Exception as ex:
        rprint('[red]Redis Error ',ex)
+       
     return Controller.model_validate(Controller(name="The Bollnas Project",hubs=[]))

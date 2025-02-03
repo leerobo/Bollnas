@@ -6,7 +6,7 @@ import datetime,json
 
 r = redis.Redis(host='localhost', port=6379, db=0)
 
-async def set_cache(data: Controller, keys='bollnas',dur=120):
+async def set_cache(data: object, keys='bollnas',dur=120):
     try:
         r.set(keys, data.model_dump_json(),ex=dur)
     except Exception as e:
@@ -23,12 +23,5 @@ async def get_cache(keys='bollnas') -> dict:
     except Exception as e:  
        raise Exception(e)
 
- # Test setup only 
-def test_hub() -> Controller:
-    sensor1 = Sensor(name='Tank Hi',id='1',description='Temperature',type=1,value=20)
-    sensor2 = Sensor(name='Tank Med',id='2',description='Temperature',type=1,value=30)
-    sensor3 = Sensor(name='Tank Low',id='1',description='Temperature',type=1,value=25)
-    hub1 = Sensorhub(name='Boiler1',mac='00:00:00:00:00:01',ip='192.168.0.10',sensors=[sensor1,sensor2])
-    hub2 = Sensorhub(name='Boiler2',mac='00:00:00:00:00:02',ip='192.168.0.11',sensors=[sensor3])
-    return Controller(name='Bollnas',hubs=[hub1,hub2])
-  
+async def exists(key):
+     return r.exists(key)

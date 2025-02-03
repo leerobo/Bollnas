@@ -11,23 +11,23 @@ from fastapi.responses import JSONResponse
 from rich import print as rprint
 
 from Controller.ConfigController.settings import get_settings
+from Common.Schemas.response.scannerHubs import Hubs,Hub
 from pynetgear import Netgear
 import socket,requests
 
 def scan_lan():
     Attached_list={}
-    print('pws',get_settings().netgear_password )
     if get_settings().netgear_password != "":
       rprint("[yellow]TASK:     [/yellow][bold]Logon Netgear Router",get_settings().dns )
       netgear = Netgear(password=get_settings().netgear_password)
       rprint("[yellow]TASK:     [/yellow][bold]Scanning Netgear Router",get_settings().dns )
       
-
-      if netgear.login_try_port() :
-        for i in netgear.get_attached_devices():
+      if netgear.login_try_port() :        
+        for i in netgear.get_attached_devices():                        # namedTuple Device List
            if i.name != None:
-             if i.name not in Attached_list :  Attached_list[i.name]=i
+             if i.name not in Attached_list  :  Attached_list[i.name]=i
              if i.type == 'wired' and Attached_list[i.name].type == 'wireless' :  Attached_list[i.name]=i
+
       else: rprint("[red]ERROR:   [/red][bold]NetGear Logon Error",get_settings().dns )  
 
     else:
@@ -40,15 +40,17 @@ def scan_lan():
           pass  
 
     # find the SenorHubs
-    hubs={}
+    SensorHubsFound=[]
     for i in Attached_list:
-      rprint('Scanner List',Attached_list[i])
-      rprint("[purple]DEBUG:    [/purple][bold]Scanning",Attached_list[i].ip,'-',get_settings().sensorHub_port)
+      #rprint('Scanner List',Attached_list[i])
+      rprint("[purple]DEBUG:    [/purple][bold]Scanning",Attached_list[i].ip,'-',get_settings().sensorHub_port,end='')
       try:
         x = requests.get('http://{}:{}/info'.format(Attached_list[i].ip,get_settings().sensorHub_port ),timeout=1)
-        rprint("[yellow]HUB:      [/yellow][bold]Sensor Hub Found @", Attached_list[i].ip) 
-        hubs[i]=Attached_list[i]
+        SensorHubsFound.append(Hub.from_list(Attached_list[i]))
+        rprint("[green]  -  SensorHub Found")
       except Exception as e:
-        print(e)  
+        rprint("[yellow]  -  Not Connect")
+        pass
+        #rprint('[red]ERROR[/red]     Hub Extract Error:',e)  
       
-    return  hubs
+    return  Hubs(count=len(SensorHubsFound),SensorHubs=SensorHubsFound)
