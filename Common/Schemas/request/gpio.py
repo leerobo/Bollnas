@@ -1,7 +1,7 @@
 """Define Schemas used by the User routes."""
 
 from pydantic import BaseModel,  Field
-import Bollnas.models.enums as enums
+import Common.Models.enums as enums
 
 class GPIOrequest(BaseModel):
     """Request schema for the Register Route."""

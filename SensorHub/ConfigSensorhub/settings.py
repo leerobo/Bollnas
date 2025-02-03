@@ -10,7 +10,7 @@ from rich import print as rprint
 from pydantic import field_validator,BaseModel,Field,ConfigDict
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from Bollnas.config.helpers import get_project_root
+from Common.Config.helpers import get_project_root
 
 class controllerType(BaseSettings):
 

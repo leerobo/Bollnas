@@ -18,8 +18,8 @@ from Common.Config.helpers import get_api_version, get_project_root
 from Common.Managers import pollSensors
 from Common.Schemas.response.gpio  import GPIOresponse
 
-from Config.settings import get_settings,get_sensorhub_settings
-from Blueprint import sensorhub
+from .ConfigSensorhub.settings import get_settings
+from .Blueprint import sensorhub
 
 # from fastapi_cache import FastAPICache
 # from fastapi_cache.backends.redis import RedisBackend
@@ -46,7 +46,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-rprint("[blue]INFO:     [/blue][bold]Loaded SensorHub", get_sensorhub_settings().sensorhub_name)
+rprint("[blue]INFO:     [/blue][bold]Loaded SensorHub")
 app.include_router(sensorhub.router)
 
 static_dir = get_project_root() / "static"

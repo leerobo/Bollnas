@@ -10,17 +10,16 @@ from Common.Schemas.response.sensors import Sensors, Ping
 from Common.Schemas.response.gpio  import GPIOresponse
 from Common.Schemas.response.error import ErrorResponse
 from Common.Schemas.request.gpio import GPIOrequest
- 
 
 from rich import print as rprint
-from Common.config.settings import get_settings
+from SensorHub.ConfigSensorhub.settings import get_settings
 from Common.Managers import pollSensors
-import Common.models.enums as enums
+import Common.Models.enums as enums
 
 #from schemas.request.user import UserLoginRequest, UserRegisterRequest
 #from schemas.response.auth import TokenRefreshResponse, TokenResponse
 
-router = APIRouter(tags=["Controller"])
+router = APIRouter(tags=["sensorHub"])
 
 @router.get("/info",status_code=status.HTTP_200_OK,
     name="Ping SensonHub",

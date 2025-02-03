@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-import Bollnas.models.enums as enums
+import Common.Models.enums as enums
 
 class Sensor(BaseModel):
     id: str

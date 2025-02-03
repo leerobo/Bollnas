@@ -22,11 +22,11 @@ import logging
 import socketserver
 from typing import Union
 
-from Bollnas.config.settings import get_settings,get_sensorhub_settings
-import Bollnas.schemas.response.sensors as Schema
-from Bollnas.schemas.response.gpio import GPIOresponse
-from Bollnas.schemas.request.gpio import GPIOrequest
-import Bollnas.models.enums as enums
+from  SensorHub.ConfigSensorhub.settings import get_settings
+import Common.Schemas.response.sensors as Schema
+from Common.Schemas.response.gpio import GPIOresponse
+from Common.Schemas.request.gpio import GPIOrequest
+import Common.Models.enums as enums
 
 from rich import print as rprint
 
