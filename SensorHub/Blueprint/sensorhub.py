@@ -20,6 +20,7 @@ import Common.Models.enums as enums
 #from schemas.response.auth import TokenRefreshResponse, TokenResponse
 
 router = APIRouter(tags=["sensorHub"])
+rprint('Blueprint Loading')
 
 @router.get("/info",status_code=status.HTTP_200_OK,
     name="Ping SensonHub",

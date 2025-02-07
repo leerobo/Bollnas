@@ -9,7 +9,6 @@ import rtoml
 
 def get_project_root() -> Path:
     """Return the full path of the project root."""
-    print('proroot',resources.files("Controller") )
     return (Path(str(resources.files("Controller"))) ).resolve()
 
 def get_toml_path() -> Path:

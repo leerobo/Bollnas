@@ -114,9 +114,11 @@ class Settings(BaseSettings):
 
     # Wire1 Directory 
     wire1Dir: str = "/sys/bus/w1/devices/"
+    WIRE1description: dict = {'W1_S011937e722c2':'Outside'}
 
     # relays BCD
     GPIOrelays: list[int] = [12,16,20,21]
+    GPIOdescription: dict = {'12':'Relay 1','16':'Relay 2'}
 
 
     # controller_settings: Optional[controllerType] = Field(default=None)

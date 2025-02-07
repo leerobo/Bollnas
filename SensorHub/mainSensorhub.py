@@ -12,9 +12,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from rich import print as rprint
 # from sqlalchemy.exc import SQLAlchemyError
 # from pathlib import Path 
+sys.path.append(os.path.abspath("./"))
 
 import Common.Models.enums as enums
-from Common.Config.helpers import get_api_version, get_project_root
+from Common.Config.helpers import get_api_version, get_project_root, get_api_details
 from Common.Managers import pollSensors
 from Common.Schemas.response.gpio  import GPIOresponse
 
@@ -48,6 +49,7 @@ app = FastAPI(
 
 rprint("[blue]INFO:     [/blue][bold]Loaded SensorHub")
 app.include_router(sensorhub.router)
+rprint('SensorHub Running ')
 
 static_dir = get_project_root() / "static"
 
@@ -60,3 +62,4 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+rprint('SensorHub Here')

@@ -43,6 +43,7 @@ from rich import print as rprint
 
 async def poll(): 
     rtn={}
+    rtn['timestamp']=str(datetime.datetime.now())
     rtn['wire1Sensors']=pollWire1()
     rtn['GPIOsettings']=pollGPIO()
     rprint('Poll :',rtn)    
@@ -69,8 +70,9 @@ def pollWire1() -> list[Schema.Sensor]:
                                  type=enums.SensorType.DS18B20, 
                                  measurement=enums.SensorMeasurement.c, 
                                  platform=enums.SensorPlatform.wire1, 
-                                 value=sensorVal) 
-                                 )
+                                 value=sensorVal,
+                                 description=getDescriptions('W1_S'+SID[3:])
+                                 )  )
 
     return wire1Sensors
 def readWire1(SID) -> float:
@@ -106,11 +108,18 @@ def pollGPIO()  -> list[GPIOresponse]:
             rtn.append( GPIOread( GPIOresponse(pin=relay,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out)  ) )
     except Exception as ex:
         rprint('[red]Sensor {} Read Error : {}'.format(relay,ex) )
-        rtn.append( GPIOread( GPIOresponse(pin=relay,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out,
-                                           status=enums.GPIOstatus.error,value=-86
-                                           )  ) )
+        rtn.append( GPIOread( GPIOresponse(pin=relay,pintype=enums.GPIOdeviceAttached.relay,
+                                           direction=enums.GPIOdirection.out,
+                                           status=enums.GPIOstatus.error,value=-86,
+                                           description=getDescriptions(relay)
+                                           )  )  )
     return rtn
 
+def getDescriptions(pinW1) -> str:
+    print(pinW1,get_settings().GPIOdescription)
+    if str(pinW1) in get_settings().GPIOdescription:  return get_settings().GPIOdescription[str(pinW1)]
+    if str(pinW1) in get_settings().WIRE1description: return get_settings().WIRE1description[str(pinW1)]
+    return ""
 
 # Control GPIO Pins 
 def GPIOread(pin: GPIOresponse) -> GPIOresponse:
