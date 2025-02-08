@@ -50,6 +50,6 @@ def scan_lan() -> Hubs:
       except Exception as e:
         # rprint("[yellow]  -  Not Connect")
         pass
-        #rprint('[red]ERROR[/red]     Hub Extract Error:',e)  
+
       
     return  Hubs(count=len(SensorHubsFound),SensorHubs=SensorHubsFound)
