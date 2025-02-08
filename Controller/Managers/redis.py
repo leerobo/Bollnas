@@ -10,9 +10,10 @@ r = redis.Redis(host='localhost', port=6379, db=0)
 async def set_cache(data: object, keys='bollnas',dur=0):
     try:
         if dur == 0 : dur = getConfig().redisTimer
-        rprint('[blue]INFO      [/blue]Cached',keys,'for',dur,'Seconds')
+        rprint("[orange3]CNTL:     [/orange3][yellow]Cached",keys,'[yellow]for',dur,'[yellow]Seconds')
         r.set(keys, data.model_dump_json(),ex=dur)
     except Exception as e:
+        rprint("[red]CNTL:     [/red][yellow]Cached Error",e)
         print(__name__,':set:',e)
     return
 

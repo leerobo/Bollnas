@@ -18,9 +18,9 @@ from Controller.Config import getConfig
 def scan_lan() -> Hubs:
     Attached_list={}
     if getConfig().netgear_password != "":
-      rprint("[yellow]TASK:     [/yellow][bold]Logon Netgear Router",getConfig().dns )
+      rprint("[orange3]CNTL:     [/orange3][yellow]Logon Netgear Router[/yellow]",getConfig().dns )
       netgear = Netgear(password=getConfig().netgear_password)
-      rprint("[yellow]TASK:     [/yellow][bold]Scanning Netgear Router",getConfig().dns )
+      rprint("[orange3]CNTL:     [/orange3][yellow]Scanning Netgear Router[/yellow]" )      
       
       if netgear.login_try_port() :        
         for i in netgear.get_attached_devices():                        # namedTuple Device List
@@ -28,10 +28,10 @@ def scan_lan() -> Hubs:
              if i.name not in Attached_list  :  Attached_list[i.name]=i
              if i.type == 'wired' and Attached_list[i.name].type == 'wireless' :  Attached_list[i.name]=i
 
-      else: rprint("[red]ERROR:   [/red][bold]NetGear Logon Error",getConfig().dns )  
+      else: rprint("[red]CNTL:     [/red]NetGear Error")
 
     else:
-      rprint("[yellow]TASK:     [/yellow][bold]Scanning",getConfig().dns)
+      rprint("[orange3]CNTL:     [/orange3][yellow]LAN scanner[/yellow]",getConfig().dns )
       for i in range(2,250):
         try :
           x = requests.get('http://192.168.1.{}'.format(i),timeout=1)
@@ -46,7 +46,7 @@ def scan_lan() -> Hubs:
       try:
         x = requests.get('http://{}:{}/info'.format(Attached_list[i].ip,getConfig().sensorHub_port ),timeout=1)      
         SensorHubsFound.append(Hub.from_list(Attached_list[i]))
-        rprint("[green]HUB:    [/green][bold] Hub",Attached_list[i].ip,' on Port ',getConfig().sensorHub_port,end='')
+        rprint("[orange3]CNTL:     [/orange3][yellow]Hub Attached",Attached_list[i].ip,' on Port ',getConfig().sensorHub_port )
       except Exception as e:
         # rprint("[yellow]  -  Not Connect")
         pass

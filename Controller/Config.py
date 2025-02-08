@@ -23,7 +23,6 @@ class Settings(BaseSettings):
     project_root: Path = get_project_root()
     api_root:str =""
 
-    print('root',project_root)
     env_file: str = str(project_root / ".env")
     try:
       model_config = SettingsConfigDict(env_file=env_file,extra="allow",)

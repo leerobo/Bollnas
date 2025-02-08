@@ -35,7 +35,7 @@ app = FastAPI(
 )
 
 # Load router URL paths depending on the settings
-rprint("[green]INFO:     [blue][bold]Loaded Controller ")
+rprint("[orange3]CNTL:     [/orange3]Loaded Controller ")
 app.include_router(bluePrint.router)
 
 # Add prometheus asgi middleware to route /metrics requests

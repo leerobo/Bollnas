@@ -24,10 +24,16 @@ router = APIRouter(tags=["Controller"])
 
 @router.get("/scan",status_code=status.HTTP_200_OK,
     name="Scan Lan for SensorHubs",
-    response_model=Hubs.Hubs,
-    description="Scanned LAN for attached Sensor Hubs and cache list to allow for polling via /hubs",
+    response_model=Hubs.Hubs
 )
 async def scan():
+    """
+    Scan Lan finding attached Sensor Hubs based on the sensorHub port number
+    - **netgear**: If a Netgear Router , then set password to gain access to the router to extract attached devices.
+    - **LanScan**: Scan sequencally thru the IP range of DNS 
+
+    LanScan can take up to 2 mins to complete,  Netgear scann can take up to a minute to complete
+    """
     cacheKey='HubCache'
     Hubs=scan_lan()
     await redis.set_cache(data=Hubs,keys=cacheKey,dur=getConfig().redisHubTimer)
@@ -37,11 +43,13 @@ async def scan():
 
 
 @router.get("/hubs",status_code=status.HTTP_200_OK,    
-    response_model=dict,
-    name="response with sensorhub sensors and update Metrics",
-    description="Poll all attached SensorHubs to responsed with attached device information if not within Cache (See redis cache timer in Config) , this also build up the prometheus metrics response ",
+    response_model=Poll.Poll,
+    name="response with sensorhub sensors and update Metrics"
 )
 async def scan_hubs():                                      #  Scan Available sensorHubs and return responses 
+    """
+    Responses all attached SensorHubs information and setups the metrics formatted collections
+    """    
     cacheKey='HubCache'
     try:
        if await redis.exists(cacheKey) == 0:                #  Scan for Hubs if Cache has expired
@@ -51,7 +59,7 @@ async def scan_hubs():                                      #  Scan Available se
           scannHub=Hubs.Hubs(**await redis.get_cache(cacheKey))
 
     except Exception as ex:
-       rprint('[red]Redis Error ',ex)
+       rprint("[red]CNTL:     [/red]Redis Error ",ex)
        return None
     
     rtn={'timestamp':str(datetime.datetime.now()) }
@@ -61,14 +69,12 @@ async def scan_hubs():                                      #  Scan Available se
           sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getConfig().sensorHub_port))
           sensorSchema=Poll.Poll(**sensorsRtn.json())
           await redis.set_cache(data=sensorSchema,keys=getHubs.name)
-          #rprint('>New>',sensorSchema)
       else:  
         try:
             cachedData=await redis.get_cache(keys=getHubs.name)
-            rprint('>Cached>',cachedData)
             sensorSchema=Poll.Poll(**cachedData)
         except Exception as ex:
-            rprint('[red]ERROR     [/red]Caching Error ',ex)    
+            rprint("[red]CNTL:     [/red]Caching Error ",ex)  
             return None,400
 
       # set up metrics
@@ -91,7 +97,7 @@ async def scan_hubs():                                      #  Scan Available se
                   if pins.value == 0 :  e.state('on')            
                   else :                e.state('off')
             except Exception as ex:
-               rprint('[red]ERROR      [/red]',regName,':',ex)    
+               rprint("[red]CNTL:     [/red]",regName,':',ex)
 
       for W1 in sensorSchema.wire1Sensors:
             if W1.description != '': SubDesc=W1.id+'_'+W1.description
@@ -108,7 +114,7 @@ async def scan_hubs():                                      #  Scan Available se
                     )
                   e.set(W1.value)            
             except Exception as ex:
-               rprint('[red]ERROR      [/red]',regName,':',ex)    
+               rprint("[red]CNTL:     [/red]",regName,':',ex)
             
       rtn[getHubs.name]=sensorSchema
 
