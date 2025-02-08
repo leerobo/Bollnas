@@ -9,6 +9,7 @@
 
 # Ignore Python bytecode
 __pycache__/
+
 *.py[cod]
 *.pyc
 *.bak
@@ -21,8 +22,7 @@ Cert/mccsign_staged_card_evry_com/privkey.pem
 Cert/SESSION/privkey.pem
 
 # Dev drops
-Bollnas-orig
-prometheus_multiproc_dir
-.env
+Bollnas
+.env/
 refonly.*
-venv
+prometheus_multiproc_dir/

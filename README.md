@@ -1,11 +1,22 @@
 # The Bollnas Project
 
-Using Grafana and Prometheus to monitor RPIs dotted around the house was always a pain that you had to config prometheus with the APIs and Ports every time i added a RPI or the DNS hit the wall and everything has a different IP address.
+Using Grafana and Prometheus to monitor RPIs dotted around the house was always a pain that you had to config prometheus with the APIs and Ports every time,  be it when the DNS reset the IP and i forgot to give it a static IP or the router dies and i have to remember the IPs (happped once,  waste of a weekend that was)
 
-So now promethus just has access to the controller,  which is a set of APIs then force it to scan the LAN,  find sensorhubs,  registered them and them continue to poll them.  This allowed me to see realtime the RPIs status via the controllers Status API and uses the promethues Client repos to allow my main server to get the info and store it. 
+So now promethus just has access to the controller,  which is a set of APIs to force it to scan the LAN for sensorhubs (rpi),  registered them and poll them for metrics.  I will add a little GUI to show the sensorhubs status,  the latest Poll figures of sensors .
 
-The sensorshub polls the sensors and relay pins and stores the settings ready for the next controller request,  it can also accept requests to toggle the relay pins via the controller.
+The sensorshub has 2 real functions:-
+1. Read Attached Sensors
+2. Control the GPIO pins (On/off/Toggle)
 
+## Process
+hen a metric or poll request comes into the  Controller, it Polls all the sensorHubs at once if there is NO redis cache (which is about 2 minutes, see config) , it then repackages the reponses or cache data to responsed for the Controller.
+
+But sometimes the responses are slow (old RPIzero) or the zigbee hat needs to reset. so for houses will alot on RPIs or sensors attached there is 
+a autoPoll Script that calls the Controller /hubs,  This refreshs the cache in the controller.  
+Only ever needed to ever run this where i'v had a couple of zigbee hats running on RPIs.  But if you see grafana has gaps , try setting this up
+
+
+### Requirements
 | Packages | Description | 
 | ----------- | ----------- |
 | FastAPI | Python API Framework |
@@ -14,47 +25,44 @@ The sensorshub polls the sensors and relay pins and stores the settings ready fo
 | redis | Caching framework |
 
 
-### Configs
-- .envcontroller : Controller Setup Details
-- .envsensorhub  : SensorHub Setup Details
+## Configs
+Common.settings holds generic parms, .env holds parms that are secret to you,  such as passwords, keys, etc .  this never gets uploaded to Github
 - .env : Setup package details used by Framework
+- ConfigSensorHub.settings -- Settings for this install of sensorhub.
 
-### Setup
-Create a Venv area on the RPI
+## General Setup
+Create a Venv area on the RPI and download required packages
 ``` bash
 sudo python3 -m venv venv
 source  venv/bin/activate
-```
-
-Load up the enviroment
-``` bash
 python3 -m pip install -r requirements.txt
 ```
-### Installing on a device
-
-you can install Controller on a RPI or any linux server as a servicectl or docker image
-the sensorhub is designed to be installed on a RPI only, due to the GPIO requirements
-
-You can install both controller and sensorhub on the same RPI,  recommend a RPI5 or above 
-in docker containers.
 
 
-#### SensorHub Config and Setup 
+## SensorHub Config and Setup 
+Sensorhub uses RPI.GPIO within a venv python enviroment, so running with a docker enviroment is tricky to setup 
+so it has access to the GPIO of the device,  so i run it as a Daemon service which allows easy access to the GPIO
+
+If you want to go for a docker enviroment,  then maybe try PIGPIO 
 
 in ConfigSensorHb.settings
 ``` yml
-# Wire1 Directory        <<<<<<<<<< Allows you to allocate a name to an ID
+# Wire1 Directory        <<<<<<<<<< Allows you to allocate a name to an ID if you want to
 wire1Dir: str = "/sys/bus/w1/devices/"
 WIRE1description: dict = {'W1_S011937e722c2':'Outside'}
 
-# relays BCD             <<<<<<<<<< Allows you to allocate a GPIO to a name
+# relays BCD             <<<<<<<<<< Allows you to allocate a GPIO to a name if you want to
 GPIOrelays: list[int] = [12,16,20,21]
 GPIOdescription: dict = {'12':'Relay 1','16':'Relay 2'}
 ```
 
-If no Relays attached to GPIO then set to GPIOrelays: list[int] = [] 
+If no Relays attached to GPIO then set to :-
+``` yml
+   GPIOrelays: list[int] = [] 
+   GPIOdescription: dict = {}
+```   
 
-#### Systemmd Service setup
+### Systemmd Service setup
 
 sensorhub runs within the venv area, which means it has access to RPi.gpio (unlike docker - can use pigpio if you want docker), Ammend the Scripts.sensorhub.service if you wish to use a different port number
 
@@ -85,8 +93,9 @@ ip a
 ```
 
 
-
 #### Controller
+You can setup the controller either as a docker container or as a system.service (like the sensorhub) 
+
 if running via docker,  run dockerbuild to get the latest image
 `
 docker compose 
@@ -100,9 +109,9 @@ CONTROLLER_NAME="Bollnas"
 CONTROLLER_DESCRIPTION="The Bollnas Project"
 `
 
-#### Timers & Events
+#### Timers & Events AutoPoll 
 If you wish to automate the results then use the auto.sh as a template to run in the background
-polling the controller .  Useful to control relays, lights depending on the polled results.
+polling the controller .  
 
 
 ### Reference

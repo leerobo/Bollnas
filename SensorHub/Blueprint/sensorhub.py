@@ -29,11 +29,10 @@ rprint('Blueprint Loading')
 )
 def ping():
     rtn= Ping(name=get_settings().api_title, 
-                description=get_settings().api_description, 
-                devicetype=enums.DeviceType.sensorhub,
-                relays=get_settings().GPIOrelays
+              description=get_settings().api_description, 
+              devicetype=enums.DeviceType.sensorhub,
+              relays=get_settings().GPIOrelays
                )
-    print(rtn)
     return rtn
 
 @router.get("/poll",status_code=status.HTTP_200_OK,

@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field,ConfigDict
 
+### Used by Controllers to hold sensorHub Details 
+
 class CustomBaseModel(BaseModel):
     @classmethod
     def from_list(cls, tpl):
