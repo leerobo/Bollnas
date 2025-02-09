@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     project_root: Path = get_project_root()
     api_root:str =""
 
-    env_file: str = str(project_root / "SensorHub/.env")
+    env_file: str = str(project_root / "SensorHub/sensorhub.env")
     try:
       model_config = SettingsConfigDict(env_file=env_file,extra="allow",)
       rprint("[orange3]CNTL:   [/orange3][bold]Loaded "+env_file+" file")
