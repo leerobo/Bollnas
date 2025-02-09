@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import sys,os
+from typing import Dict, Any
+
 from functools import lru_cache
 from pathlib import Path  
 from rich import print as rprint
@@ -12,6 +14,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from Common.Config.helpers import get_project_root
 
+ 
 class Settings(BaseSettings):
     """Main Settings class.
 
@@ -23,11 +26,12 @@ class Settings(BaseSettings):
     project_root: Path = get_project_root()
     api_root:str =""
 
-    env_file: str = str(project_root / "Controller/.env")
+    env_file: str = str(project_root / "SensorHub/.env")
     try:
       model_config = SettingsConfigDict(env_file=env_file,extra="allow",)
+      rprint("[orange3]CNTL:   [/orange3][bold]Loaded "+env_file+" file")
     except Exception as e:
-      rprint("[red]ERROR:   [/red][bold]Missing .env file")
+      rprint("[red]ERROR:   [/red][bold]Missing SensorHub .env file")
       sys.exit(1)
 
     project_name:str = "The Bollnas Project"
@@ -38,7 +42,7 @@ class Settings(BaseSettings):
 
     cors_origins: str = "*"
 
-    # JTW secret Key
+     # JTW secret Key
     secret_key: str = "1F24921CEADCE4E0113C84EFA60A9802"  # noqa: S105
     access_token_expire_minutes: int = 7200
 
@@ -64,11 +68,31 @@ This allowed me to see realtime the RPIs status via the controllers Status API a
     sensorHub_port: str ="14121"
     netgear_password: str = ""
 
+    # Wire1 Directory 
+    wire1: bool = False
+    wire1dir: str = "/sys/bus/w1/devices/"
+    wire1description: dict
+
+    # relays BCD
+    relays: bool = False
+    GPIOrelays: list[int] = []
+    GPIOdescription: dict
+
+   # Zigbee
+    zigbee: bool = False
+
     i_read_the_damn_docs: bool = False
+
+    @field_validator("wire1description","GPIOdescription")
+    @classmethod
+    def w1d(cls: type[Settings], value: str) -> str:
+        print('---------------',type(value),value)
+        return value    
     
 @lru_cache
 def getConfig() -> Settings:
     """Return the current settings."""
     Settings.model_rebuild()
+    print('getConfig 2')
     return Settings()
 

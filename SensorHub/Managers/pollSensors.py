@@ -1,46 +1,21 @@
 #!/usr/bin python3
-
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from prometheus_client import start_http_server, Gauge
-from urllib import parse
-import RPi.GPIO as GPIO
-import configparser 
-import time
-import http.client
-import json
-
-import sys
-import os
-import time
-import datetime
-import glob
-import socket
+try:
+    # checks if you have access to RPi.GPIO, which is available inside RPi
+    import RPi.GPIO as GPIO
+except:
+    # In case of exception, you are executing your script outside of RPi, so import Mock.GPIO
+    import Mock.GPIO as GPIO
+    
+import sys, os, time, datetime, glob
 from array import array
-#from systemd import journal
-#import Adafruit_DHT
-import logging
-import socketserver
 from typing import Union
 
-from  SensorHub.ConfigSensorhub.settings import get_settings
-import Common.Schemas.response.sensors as Schema
-from Common.Schemas.response.gpio import GPIOresponse
-from Common.Schemas.request.gpio import GPIOrequest
+import Common.Schemas.Sensors.gpio as gpio
+import Common.Schemas.Sensors.wire1 as wire1
 import Common.Models.enums as enums
 
 from rich import print as rprint
-
-# configPOLL = configparser.ConfigParser()
-# configPINS = configparser.ConfigParser()
-# KillSwitch = True
-# POLLlst={"DEF":0}
-# GaugeW1={"DEF":20}   # W1 Sensors
-# GaugePIN={"DEF":20}  # Activate Pins
-# Vers='1.0.2'
-# MID='XX'
-# #global PortNo
-# #global POLLgap
-
+from SensorHub.Config import getConfig  
 async def poll(): 
     rtn={}
     rtn['timestamp']=str(datetime.datetime.now())
@@ -51,14 +26,14 @@ async def poll():
           
 # ---------------- WIRE 1 find and read --------------------
 
-def pollWire1() -> list[Schema.Sensor]:
+def pollWire1() -> list[wire1.Status]:
     """ ## Wire 1 Poll
     On RPI on sensors Wire-1 connects are held in the wireDir1 directory,
     This scans the Directory for the files,  one file, one sensor.
     """
     wire1Sensors=[]
     SIDs=[]
-    devicelist = glob.glob(get_settings().wire1Dir+'28*')   #  DS18 Sensors
+    devicelist = glob.glob(getConfig().wire1dir+'28*')   #  DS18 Sensors
 
     if devicelist!='':
         for device in devicelist:
@@ -66,7 +41,8 @@ def pollWire1() -> list[Schema.Sensor]:
             SID = TT[len(TT)-1]
             sensorVal=readWire1(SID)
             if sensorVal > -999:
-               wire1Sensors.append( Schema.Sensor(id='W1_S'+SID[3:], 
+               wire1Sensors.append( wire1.Status(
+                                 id='W1_S'+SID[3:], 
                                  type=enums.SensorType.DS18B20, 
                                  measurement=enums.SensorMeasurement.c, 
                                  platform=enums.SensorPlatform.wire1, 
@@ -77,7 +53,7 @@ def pollWire1() -> list[Schema.Sensor]:
     return wire1Sensors
 def readWire1(SID) -> float:
     """ Read Wire 1 sensors from Directory based on Sensor ID(File name) """
-    devicefile=get_settings().wire1Dir+SID+'/w1_slave'
+    devicefile=getConfig().wire1dir+SID+'/w1_slave'
     try:
         fileobj = open(devicefile,'r')
         lines = fileobj.readlines()
@@ -97,31 +73,34 @@ def readWire1(SID) -> float:
 # ---------------- GPIO Pin Reads --------------------
 
 # Return Pin ON/OFF status
-def pollGPIO()  -> list[GPIOresponse]:
+def pollGPIO()  -> list[gpio.Pins]:
     rprint('[yellow]GPIO Scanning')
     rtn=[]
     try:
         GPIO.setwarnings(False) 
         GPIO.setmode(GPIO.BCM)
-        for relay in get_settings().GPIOrelays:
+        for relay in getConfig().GPIOrelays:
             # GPIO.setup(int(relay), GPIO.OUT)
-            rtn.append( GPIOread( GPIOresponse(pin=relay,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out)  ) )
+            rtn.append( GPIOread( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,
+                                            direction=enums.GPIOdirection.out,
+                                            status=enums.GPIOstatus.ok,
+                                            description=getDescriptions(relay))  ) )
     except Exception as ex:
         rprint('[red]Sensor {} Read Error : {}'.format(relay,ex) )
-        rtn.append( GPIOread( GPIOresponse(pin=relay,pintype=enums.GPIOdeviceAttached.relay,
-                                           direction=enums.GPIOdirection.out,
-                                           status=enums.GPIOstatus.error,value=-86,
-                                           description=getDescriptions(relay)
-                                           )  )  )
+        rtn.append( GPIOread( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,
+                                        direction=enums.GPIOdirection.out,
+                                        status=enums.GPIOstatus.error,value=-86,
+                                        description=getDescriptions(relay)
+                                       )  )  )
     return rtn
 def getDescriptions(pinW1) -> str:
-    print(pinW1,get_settings().GPIOdescription)
-    if str(pinW1) in get_settings().GPIOdescription:  return get_settings().GPIOdescription[str(pinW1)]
-    if str(pinW1) in get_settings().WIRE1description: return get_settings().WIRE1description[str(pinW1)]
+    print('Get description >>>',pinW1,getConfig().GPIOdescription)
+    if str(pinW1) in getConfig().GPIOdescription:  return getConfig().GPIOdescription[str(pinW1)]
+    if str(pinW1) in getConfig().wire1description: return getConfig().wire1description[str(pinW1)]
     return ""
 
 # Control GPIO Pins 
-def GPIOread(pin: GPIOresponse) -> GPIOresponse:
+def GPIOread(pin: gpio.Pins) -> gpio.Pins:
     GPIO.setwarnings(False) 
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(pin.pin, GPIO.OUT)
@@ -134,7 +113,7 @@ def GPIOread(pin: GPIOresponse) -> GPIOresponse:
        pin.value = -85
        pin.status = enums.GPIOstatus.error
        return pin
-def GPIOset(pinReq:GPIOresponse,task:enums.GPIOtask) -> GPIOresponse:
+def GPIOset(pinReq:gpio.Pins,task:enums.GPIOtask) -> gpio.Pins:
     currentPin=GPIOread(pinReq)
     if currentPin.status != enums.GPIOstatus.ok:      return currentPin 
     GPIO.setup(pinReq.pin, GPIO.OUT)

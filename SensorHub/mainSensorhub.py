@@ -10,51 +10,43 @@ from fastapi.middleware.cors import CORSMiddleware
 # from fastapi.staticfiles import StaticFiles
 
 from rich import print as rprint
-# from sqlalchemy.exc import SQLAlchemyError
-# from pathlib import Path 
-sys.path.append(os.path.abspath("./"))
 
+import SensorHub.Blueprint as bluePrint
+import SensorHub.Managers.pollSensors as pollSensors
+
+from  SensorHub.Config import getConfig
+import Common.Schemas.Sensors.wire1 as wire1
+import Common.Schemas.Sensors.gpio as gpio
 import Common.Models.enums as enums
 from Common.Config.helpers import get_api_version, get_project_root, get_api_details
-from Common.Managers import pollSensors
-from Common.Schemas.response.gpio  import GPIOresponse
 
-from .ConfigSensorhub.settings import get_settings
-from .Blueprint import sensorhub
-
-# from fastapi_cache import FastAPICache
-# from fastapi_cache.backends.redis import RedisBackend
-# from fastapi_cache.decorator import cache
-    
-from redis import asyncio as aioredis
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    rprint('Reset Relays :',get_settings().GPIOrelays)
-    for relay in get_settings().GPIOrelays:
-        pollSensors.GPIOset( GPIOresponse(pin=relay,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out), task=enums.GPIOtask.off )
+    rprint('Reset Relays :',getConfig().GPIOrelays)
+    for relay in getConfig().GPIOrelays:
+        pollSensors.GPIOset( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out), task=enums.GPIOtask.off )
     yield
 
 app = FastAPI(
-    title=get_settings().api_title,
-    description=get_settings().api_description,
+    title=getConfig().api_title,
+    description=getConfig().api_description,
     redoc_url=None,
-    docs_url=f"{get_settings().api_root}/docs",
+    docs_url=f"{getConfig().api_root}/docs",
     #license_info=get_settings().license_info,
-    contact=get_settings().contact,
+    contact=getConfig().contact,
     version=get_api_version(),
     swagger_ui_parameters={"defaultModelsExpandDepth": 0},
     lifespan=lifespan
 )
 
-rprint("[blue]INFO:     [/blue][bold]Loaded SensorHub")
-app.include_router(sensorhub.router)
-rprint('SensorHub Running ')
+rprint("[orange3]CNTL:     [/orange3]Loaded SensorHub ")
+app.include_router(bluePrint.router)
 
 static_dir = get_project_root() / "static"
 
 # set up CORS
-cors_list = (get_settings().cors_origins).split(",")
+cors_list = (getConfig().cors_origins).split(",")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_list,
@@ -62,4 +54,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-rprint('SensorHub Here')

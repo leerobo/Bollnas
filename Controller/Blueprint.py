@@ -110,14 +110,14 @@ async def scan_hubs():                                      #  Scan Available se
             try:
                regName=getHubs.name+'_WIRE1_'+SubDesc
                if regName in prom.REGISTRY._names_to_collectors:
-                  e =  prom.REGISTRY._names_to_collectors[regName]
+                  es =  prom.REGISTRY._names_to_collectors[regName]
                else: 
-                  e = Gauge(name=SubDesc,
+                  es = Gauge(name=SubDesc,
                      namespace=getHubs.name,
                      subsystem='WIRE1',
                      documentation=str(W1.type.name)+'-'+str(W1.measurement.value)
                     )
-                  e.set(W1.value)            
+               es.set(W1.value)            
             except Exception as ex:
                rprint("[red]CNTL:     [/red]",regName,':',ex)
       

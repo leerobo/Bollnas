@@ -1,6 +1,6 @@
 """Helper classes and functions for config use."""
 
-import sys
+import sys,os
 from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
@@ -9,7 +9,7 @@ import rtoml
 
 def get_project_root() -> Path:
     """Return the full path of the project root."""
-    return (Path(str(resources.files("Controller"))) ).resolve()
+    return Path(sys.path[0])
 
 def get_toml_path() -> Path:
     """Return the full path of the pyproject.toml."""

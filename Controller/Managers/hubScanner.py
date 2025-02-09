@@ -33,8 +33,9 @@ def scan_lan() -> Hubs:
     else:
       rprint("[orange3]CNTL:     [/orange3][yellow]LAN scanner[/yellow]",getConfig().dns )
       for i in range(2,250):
+        rprint("[orange3]CNTL:     [/orange3][yellow]LAN",i )
         try :
-          x = requests.get('http://192.168.1.{}'.format(i),timeout=1)
+          x = requests.get('http://192.168.1.{}:{}'.format(i,getConfig().sensorHub_port),timeout=1)
           Attached_list[i]={'ip':x}
         except :
           pass  

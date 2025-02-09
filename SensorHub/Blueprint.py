@@ -1,19 +1,18 @@
 """Define routes for Authentication."""
-
 from typing import Annotated,Union
 
 from fastapi import APIRouter, BackgroundTasks, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # from Common.database.db import get_database
-from Common.Schemas.response.sensors import Sensors, Ping
-from Common.Schemas.response.gpio  import GPIOresponse
-from Common.Schemas.response.error import ErrorResponse
-from Common.Schemas.request.gpio import GPIOrequest
+import Common.Schemas.ping as Ping
+import Common.Schemas.Sensors.wire1 as wire1
+import Common.Schemas.Sensors.gpio as gpio
+import Common.Schemas.error as error
 
 from rich import print as rprint
-from SensorHub.ConfigSensorhub.settings import get_settings
-from Common.Managers import pollSensors
+from  SensorHub.Config import getConfig
+import SensorHub.Managers.pollSensors as pollSensors
 import Common.Models.enums as enums
 
 #from schemas.request.user import UserLoginRequest, UserRegisterRequest
@@ -25,15 +24,16 @@ rprint('Blueprint Loading')
 @router.get("/info",status_code=status.HTTP_200_OK,
     name="Ping SensonHub",
     description='Ping Device and return back descriptive information',    
-    response_model=Ping
+    response_model=Ping.PingResponse
 )
 def ping():
-    rtn= Ping(name=get_settings().api_title, 
-              description=get_settings().api_description, 
+    return Ping.PingResponse(name=getConfig().api_title, 
+              description=getConfig().api_description, 
               devicetype=enums.DeviceType.sensorhub,
-              relays=get_settings().GPIOrelays
-               )
-    return rtn
+              wire1=getConfig().wire1,
+              relays=getConfig().relay,
+              zigbee=getConfig().zigbee
+            )
 
 @router.get("/poll",status_code=status.HTTP_200_OK,
     name="Poll Sensor Status",
@@ -47,15 +47,15 @@ async def poll():
 @router.post("/relay",status_code=status.HTTP_200_OK,
     name="Relay Control ",
     description='Relay controller to toggle,switch on or off GPIO Pins',
-    response_model=Union[GPIOresponse,list[GPIOresponse],ErrorResponse]
+    response_model=Union[gpio.Pins,list[gpio.Pins],error.response]
 )
-def relay(task:GPIOrequest):
+def relay(task:gpio.Pins):
     if task.pin == 0:  # Carry out task on all Relays
        rtn=[]
-       for relay in get_settings().GPIOrelays:
-          rtn.append(pollSensors.GPIOset( GPIOresponse(pin=relay,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out), task=task.task ))
+       for relay in getConfig().GPIOrelays:
+          rtn.append(pollSensors.GPIOset( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out), task=task.task ))
        return rtn
     
-    if task.pin not in get_settings().GPIOrelays:
-       return ErrorResponse(message='Pin not Defined as Relay - see GPIOrelays in settings')
-    return pollSensors.GPIOset( GPIOresponse(pin=task.pin,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out), task=task.task )
+    if task.pin not in getConfig().GPIOrelays:
+       return error.response(message='Pin not Defined as Relay - see GPIOrelays in settings')
+    return pollSensors.GPIOset( gpio.Pins(pin=task.pin,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out), task=task.task )
