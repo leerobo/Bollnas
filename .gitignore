@@ -2,27 +2,19 @@
 #Cert/
 #Config
 
-### VS Code ###
+### VS Code & venv ###
 .vscode/
 .vscode/*
 .vscode/settings.json
+venv
 
 # Ignore Python bytecode
 __pycache__/
-
 *.py[cod]
 *.pyc
 *.bak
-path
-venv
-Cert/mccencrypt_staged_card_evry_com/mccencrypt_staged_card_evry_com.pem
-Cert/mccencrypt_staged_card_evry_com/privkey.pem
-Cert/mccsign_staged_card_evry_com/mccsign_staged_card_evry_com.pem
-Cert/mccsign_staged_card_evry_com/privkey.pem
-Cert/SESSION/privkey.pem
 
 # Dev drops
-Bollnas
-.env/
-refonly.*
+Bollnas/
+*.env
 prometheus_multiproc_dir/

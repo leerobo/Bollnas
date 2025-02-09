@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     project_root: Path = get_project_root()
     api_root:str =""
 
-    env_file: str = str(project_root / "Controller/.env")
+    env_file: str = str(project_root / "Controller/controller.env")
     try:
       model_config = SettingsConfigDict(env_file=env_file,extra="allow",)
     except Exception as e:
