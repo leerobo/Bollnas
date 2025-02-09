@@ -1,0 +1,13 @@
+[Unit]
+Description=SensorHub
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/Github/Bollnas
+ExecStart=/home/pi/Github/Bollnas/venv/bin/python3 /home/pi/Github/Bollnas/venv/bin/fastapi run SensorHub/mainSensorhub.py --port 14121 --host 0.0.0.0 
+Restart=on-abort
+User=pi
+
+[Install]
+WantedBy=multi-user.target

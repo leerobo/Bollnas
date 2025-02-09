@@ -1,0 +1,42 @@
+-------------- Docker Run for vincent-leerobo on host docker.io/leerobo 
+Login Succeeded
+The push refers to repository [docker.io/leerobo/bollnas-sensorhub]
+cb41f14f9586: Preparing
+4bf249bb34e0: Preparing
+83bc99cb1016: Preparing
+e549d8dc193f: Preparing
+5f70bf18a086: Preparing
+5b783fcf6ccb: Preparing
+5b783fcf6ccb: Preparing
+b5182c1fedbe: Preparing
+f42d1564e7c4: Preparing
+449f8c2e82c6: Preparing
+5dfa3ddcd28d: Preparing
+f50074a9c5e2: Preparing
+8651006d9814: Preparing
+3ec51339a507: Preparing
+f42d1564e7c4: Waiting
+449f8c2e82c6: Waiting
+5dfa3ddcd28d: Waiting
+f50074a9c5e2: Waiting
+5b783fcf6ccb: Waiting
+b5182c1fedbe: Waiting
+3ec51339a507: Waiting
+8651006d9814: Waiting
+83bc99cb1016: Layer already exists
+5f70bf18a086: Layer already exists
+4bf249bb34e0: Layer already exists
+cb41f14f9586: Layer already exists
+e549d8dc193f: Layer already exists
+5b783fcf6ccb: Layer already exists
+449f8c2e82c6: Layer already exists
+5dfa3ddcd28d: Layer already exists
+f50074a9c5e2: Layer already exists
+8651006d9814: Layer already exists
+b5182c1fedbe: Layer already exists
+f42d1564e7c4: Layer already exists
+3ec51339a507: Layer already exists
+main: digest: sha256:80051ab34eb12a3c896229238841cce67b7989d76b79d31d9ef38ff851d22e6d size: 3234
+ 
+-------------- Complete docker.io/leerobo/bollnas-sensorhub
+ 

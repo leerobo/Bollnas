@@ -1,22 +1,23 @@
-################# Bollnas ######### 14121 ##########
-FROM python:3.12.2-slim-bookworm
+FROM python:3.12-slim AS dev
 
-# Controller
+# Sensorhub
 EXPOSE 14121   
-#ENV YOURAPPLICATION_SETTINGS=/config.py 
-#ENV PYTHONPATH=/Models
-
+ 
 # Install pip requirements
-WORKDIR /app
+WORKDIR /Bollnas
 COPY /requirements.txt .
-COPY /README.md .
-RUN python3 -m pip install -r /app/requirements.txt --no-cache-dir
+RUN python3 -m pip install -r requirements.txt --no-cache-dir
+
+RUN echo "work directory 1" > file1.txt
 
 # Package up Folders 
-WORKDIR /app
-COPY Bollnas         /app/Bollnas
+COPY /README.md    /Bollnas
+COPY /SensorHub    /Bollnas/SensorHub
+COPY /Common       /Bollnas/Common
+RUN pwd
 
-WORKDIR /app
-# Run Controller 
-CMD ["gunicorn","-w","4","-b","0.0.0.0:444", "app:create_app()"]
-# Run sensorHub
+WORKDIR /Bollnas/SensorHub
+RUN echo "work directory 2" > file2.txt
+
+#CMD ["uvicorn", "--host", "0.0.0.0", "--port","14121","mainSensorhub.py", "--reload"]
+CMD ["fastapi","run","mainSensorhub.py","--port","14121","--host","0.0.0.0"]

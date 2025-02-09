@@ -1,12 +1,12 @@
-host="ghcr.io"
-user="krkj-te"
-password="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"
-dockerhost="$host/tietoevry-card-acquiring/vincent"
-echo '-------------- Forced Github Build '
-docker build -f dockerfile --network=host --tag vincent .
-docker login $host --username $user --password "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"
-docker tag vincent $dockerhost/vincent:main
-docker image push $dockerhost/vincent:main
+#!/bin/sh
+tag="sensorhub"
+user="leerobo"
+host="docker.io"
+echo "-------------- Docker Run for vincent-$user on host $host/$user "
+docker build -f dockerfile  --network=host --tag bollnas:$tag .
+#docker login --username $user --password Winter1970.
+#docker tag bollnas:$tag $host/$user/bollnas-$tag:main
+#docker image push $user/bollnas-$tag:main
 echo " "
-echo "-------------- Complete $host/$user/vincent:main"
+echo "-------------- Complete $host/$user/bollnas-$tag"
 echo " "
