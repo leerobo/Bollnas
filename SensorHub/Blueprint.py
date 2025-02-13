@@ -49,7 +49,7 @@ async def poll():
     description='Relay controller to toggle,switch on or off GPIO Pins',
     response_model=Union[gpio.Pins,list[gpio.Pins],error.response]
 )
-def relay(task:gpio.Pins):
+def relay(task:gpio.PinsReq):
     if task.pin == 0:  # Carry out task on all Relays
        rtn=[]
        for relay in getConfig().GPIOrelays:
@@ -58,4 +58,5 @@ def relay(task:gpio.Pins):
     
     if task.pin not in getConfig().GPIOrelays:
        return error.response(message='Pin not Defined as Relay - see GPIOrelays in settings')
-    return pollSensors.GPIOset( gpio.Pins(pin=task.pin,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out), task=task.task )
+    
+    return pollSensors.GPIOset( gpio.Pins(pin=task.pin,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out), task=task.task  )

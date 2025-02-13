@@ -92,6 +92,32 @@ ip a
 # Look at eth0/wlan0 for the inet number 
 ```
 
+### zigbee setup
+
+``` bash
+docker pull deconzcommunity/deconz:latest
+
+docker run -d \
+    --name=deconz \
+    --restart=always \
+    --privileged \
+    -p 80:80 \
+    -p 443:443 \
+    -v /etc/localtime:/etc/localtime:ro \
+    -v /opt/deconz:/opt/deCONZ \
+    --device=/dev/ttyAMA0 \
+    deconzcommunity/deconz
+
+    GitHub: https://github.com/deconz-community/deconz-docker
+    Docs: https://dresden-elektronik.github.io/deconz-rest-doc/getting_started/#rest-api-client
+
+    To Add sensorhub to rashbeeII go to the web page on this device,  click auth app 
+
+``` 
+
+``` bash
+docker exec -it ded592c5657b bash 
+``` 
 
 #### Controller
 You can setup the controller either as a docker container or as a system.service (like the sensorhub) 

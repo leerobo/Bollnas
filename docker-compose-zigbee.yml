@@ -1,0 +1,19 @@
+services:
+  deconz:
+    image: deconzcommunity/deconz
+    container_name: deconz
+    restart: always
+    privileged: true
+    ports:
+      - 14100:14100
+    volumes:
+      - /opt/deconz:/opt/deCONZ
+    devices:
+      - /dev/tty0
+    environment:
+      - DECONZ_WEB_PORT=14100
+      - DEBUG_INFO=1
+      - DEBUG_APS=0
+      - DEBUG_ZCL=0
+      - DEBUG_ZDP=0
+      - DEBUG_OTA=0

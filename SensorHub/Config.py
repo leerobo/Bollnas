@@ -71,28 +71,35 @@ This allowed me to see realtime the RPIs status via the controllers Status API a
     # Wire1 Directory 
     wire1: bool = False
     wire1dir: str = "/sys/bus/w1/devices/"
-    wire1description: dict
+    wire1description: dict = {}
 
     # relays BCD
-    relays: bool = False
+    relay: bool = False
     GPIOrelays: list[int] = []
-    GPIOdescription: dict
+
+    GPIOdescription: dict = {}
 
    # Zigbee
-    zigbee: bool = False
+    zigbee: bool  = False
+    ZBport: str   = '80'
+    ZBdevice: str = ''
+    ZBuser: str   = ''
 
     i_read_the_damn_docs: bool = False
 
     @field_validator("wire1description","GPIOdescription")
     @classmethod
     def w1d(cls: type[Settings], value: str) -> str:
-        print('---------------',type(value),value)
         return value    
     
 @lru_cache
 def getConfig() -> Settings:
     """Return the current settings."""
-    Settings.model_rebuild()
-    print('getConfig 2')
+    # Settings.model_rebuild()
     return Settings()
 
+@lru_cache
+def setConfig(JS:dict) -> bool:
+    # Need to work this out  
+    Settings(**JS)
+    return True

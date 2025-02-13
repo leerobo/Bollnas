@@ -1,12 +1,6 @@
 #!/usr/bin python3
-try:
-    # checks if you have access to RPi.GPIO, which is available inside RPi
-    import RPi.GPIO as GPIO
-except:
-    # In case of exception, you are executing your script outside of RPi, so import Mock.GPIO
-    import Mock.GPIO as GPIO
     
-import sys, os, time, datetime, glob
+import sys, os, time, datetime, glob, json
 from array import array
 from typing import Union
 
@@ -15,12 +9,26 @@ import Common.Schemas.Sensors.wire1 as wire1
 import Common.Models.enums as enums
 
 from rich import print as rprint
-from SensorHub.Config import getConfig  
+from SensorHub.Config import getConfig, setConfig, Settings
+from SensorHub.Config import ConfigDict
+import requests
+
+try:
+    # checks if you have access to RPi.GPIO, which is available inside RPi
+    import RPi.GPIO as GPIO
+except Exception as ex:
+    # In case of exception, you are executing your script outside of RPi, so import Mock.GPIO
+    #import Mock.GPIO as GPIO
+    rprint('[yellow]WARNING       [/yellow]Loaded Mock RPI ',ex)
+
+
+
 async def poll(): 
     rtn={}
     rtn['timestamp']=str(datetime.datetime.now())
-    rtn['wire1Sensors']=pollWire1()
-    rtn['GPIOsettings']=pollGPIO()
+    if getConfig().wire1 : rtn['wire1Sensors']=pollWire1()
+    if getConfig().relay :rtn['GPIOsettings']=pollGPIO()
+    if getConfig().zigbee :rtn['zigbee']=pollZigbee()
     rprint('Poll :',rtn)    
     return rtn
           
@@ -40,7 +48,9 @@ def pollWire1() -> list[wire1.Status]:
             TT=device.split("/")
             SID = TT[len(TT)-1]
             sensorVal=readWire1(SID)
+            print(sensorVal)
             if sensorVal > -999:
+               print(SID)
                wire1Sensors.append( wire1.Status(
                                  id='W1_S'+SID[3:], 
                                  type=enums.SensorType.DS18B20, 
@@ -86,7 +96,7 @@ def pollGPIO()  -> list[gpio.Pins]:
                                             status=enums.GPIOstatus.ok,
                                             description=getDescriptions(relay))  ) )
     except Exception as ex:
-        rprint('[red]Sensor {} Read Error : {}'.format(relay,ex) )
+        rprint('[red]Sensor Read Error : {}'.format(ex) )
         rtn.append( GPIOread( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,
                                         direction=enums.GPIOdirection.out,
                                         status=enums.GPIOstatus.error,value=-86,
@@ -98,6 +108,97 @@ def getDescriptions(pinW1) -> str:
     if str(pinW1) in getConfig().GPIOdescription:  return getConfig().GPIOdescription[str(pinW1)]
     if str(pinW1) in getConfig().wire1description: return getConfig().wire1description[str(pinW1)]
     return ""
+
+# ---------------- GPIO Pin Reads --------------------
+
+# Return Pin ON/OFF status
+#def pollZigbee()  -> list[gpio.Zigbee]:
+def pollZigbee() :
+    rprint('[yellow]Zigbee Scanning ',getConfig().ZBuser)
+    if getConfig().ZBuser == '': 
+       user,status=ZBconnect,status = getZBuser() 
+       if status != 200 : return ZBconnect
+       rprint('[orange3]ZIGBEE     [/orange3]Set Config ZBuser too ',user['username'])
+       return {'message':'Set Config ZBuser too '+user['username']}
+    # else:
+    #    user,status=ZBconnect,status = getZBkey() 
+    #    if status != 200 : return ZBconnect
+    #    rprint('[orange3]ZIGBEE     [/orange3]Set Config ZBkey too ',user['username'])
+    #    return {'message':'Set Config ZBkey too '+user['username']}
+
+    ZBconnect,status = getZBconfig() 
+    if status != 200 : return ZBconnect
+    rprint('[orange3]ZIGBEE     [/orange3]Set Config ZBkey too ',ZBconnect)
+
+    ZBconnect,status = getZBsoftwareUpd() 
+    if status != 200 : return ZBconnect
+    rprint('[orange3]ZIGBEE     [/orange3]Set Software ZBkey too ',ZBconnect)
+
+    ZBconnect,status = getZBfirmwareUpd() 
+    if status != 200 : return ZBconnect
+    rprint('[orange3]ZIGBEE     [/orange3]Set Fireware ZBkey too ',ZBconnect)
+
+
+
+
+
+    return {'message':'Set Config ZBkey too ','data':ZBconnect}
+ 
+def findZBhub() -> tuple[dict,int]:
+    rprint('[yellow]Zigbee Find')
+    try:
+      rprint('ZBport',getConfig().ZBport)
+      resp=requests.post('http://127.0.0.1:{}/api'.format(getConfig().ZBport),data='{"devicetype":"Bollnas"}',timeout=2)
+      rprint('[yellow]ZIGBEE:     [/yellow]',resp.status_code,':',resp.json())
+      if resp.status_code != 200 : return resp.json(),resp.status_code
+      rprint('[yellow]ZIGBEE:     [/yellow]',resp.json())
+      return resp.json(),200
+    except Exception as ex:  
+      rprint('[red]ZIGBEE:      Error:[/red]-',ex)
+      return {'message':ex},403
+
+def getZBuser() -> tuple[dict,int]:
+    rprint('[yellow]Zigbee    :[/yellow]Get User on',getConfig().ZBdevice)
+    body={"devicetype": getConfig().ZBdevice }
+    try:
+      resp=requests.post('http://127.0.0.1:{}/api'.format(getConfig().ZBport),data=json.dumps(body),timeout=2)
+      if resp.status_code != 200 : return resp.json(),resp.status_code 
+      if 'success' not in resp.json()[0] : return {'message': resp.json() },403
+      return resp.json()[0]['success'],200
+    except Exception as ex:  
+      rprint('[red]Zigbee      :[/red]User Get -',ex)
+      return {'message':ex},403
+
+def getZBconfig() -> tuple[dict,int]:
+    rprint('[yellow]Zigbee    :[/yellow]Get Config on',getConfig().ZBdevice)
+    try:
+      resp=requests.get('http://127.0.0.1:{}/api/{}/config'.format(getConfig().ZBport,getConfig().ZBuser),timeout=2)
+      if resp.status_code != 200 : return resp.json(),resp.status_code 
+      return resp.json(),200
+    except Exception as ex:  
+      rprint('[red]Zigbee      :[/red]Config Get -',ex)
+      return {'message':ex},403
+
+def getZBsoftwareUpd() -> tuple[dict,int]:
+    rprint('[yellow]Zigbee    :[/yellow]Update Software on',getConfig().ZBdevice)
+    try:
+      resp=requests.get('http://127.0.0.1:{}/api/{}/config/update'.format(getConfig().ZBport,getConfig().ZBuser),timeout=2)
+      if resp.status_code != 200 : return resp.json(),resp.status_code 
+      return resp.json(),200
+    except Exception as ex:  
+      rprint('[red]Zigbee      :[/red]Software Update Get -',ex)
+      return {'message':ex},403
+
+def getZBfirmwareUpd() -> tuple[dict,int]:
+    rprint('[yellow]Zigbee    :[/yellow]Update firmware on',getConfig().ZBdevice)
+    try:
+      resp=requests.get('http://127.0.0.1:{}/api/{}/config/updatefirmware'.format(getConfig().ZBport,getConfig().ZBuser),timeout=2)
+      if resp.status_code != 200 : return resp.json(),resp.status_code 
+      return resp.json(),200
+    except Exception as ex:  
+      rprint('[red]Zigbee      :[/red]Software Update Get -',ex)
+      return {'message':ex},403
+
 
 # Control GPIO Pins 
 def GPIOread(pin: gpio.Pins) -> gpio.Pins:
