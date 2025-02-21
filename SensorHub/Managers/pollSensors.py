@@ -136,7 +136,7 @@ def GPIOset(pinReq:gpio.Pins,task:enums.GPIOtask) -> gpio.Pins:
        return  GPIOread(pinReq)
     
     except Exception as ex:
-        rprint('[red]GPIO Error : {}'.format(ex) )
+        rprint('[white with red background]GPIO Error : {}'.format(ex) )
         currentPin.status=enums.GPIOstatus.error
         currentPin.value=-86
         rprint('[red]GPIO       : {}'.format(pinReq) )
