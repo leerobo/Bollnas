@@ -114,10 +114,12 @@ def GPIOread(pin: gpio.Pins) -> gpio.Pins:
        pin.status = enums.GPIOstatus.error
        return pin
 def GPIOset(pinReq:gpio.Pins,task:enums.GPIOtask) -> gpio.Pins:
-    currentPin=GPIOread(pinReq)
-    if currentPin.status != enums.GPIOstatus.ok:      return currentPin 
     GPIO.setup(pinReq.pin, GPIO.OUT)
-    rprint('[red]GPIO {} set too Out '.format(pinReq.pin) )
+    print('relay')
+    currentPin=GPIOread(pinReq)
+    print('relay',currentPin)
+    if currentPin.status != enums.GPIOstatus.ok:      return currentPin 
+
     try:
        if   task == enums.GPIOtask.toggle and currentPin.value == 0 :
                 GPIO.output(pinReq.pin, 1)
@@ -137,7 +139,7 @@ def GPIOset(pinReq:gpio.Pins,task:enums.GPIOtask) -> gpio.Pins:
 def GPIOinit(pin:gpio.PinChange) -> bool:
     try:
        GPIO.setup(pin.pin, GPIO.OUT)
-       rprint('[red]GPIO {} set to Out '.format(pin.pin) )
+       rprint('[yellow]GPIO {} set to Out Relay '.format(pin.pin) )
        return True
     except Exception as ex:
        rprint('[red]GPIO {} Pin Set Error : {}'.format(pin.pin,ex) )

@@ -13,3 +13,4 @@ class Pins(BaseModel):
 class PinChange(BaseModel):
     pin: int                           = Field(default=None,json_schema_extra={ 'description': 'GPIO BCD pin number'} ) 
     task : enums.GPIOtask              = Field(default=enums.GPIOtask.off,json_schema_extra={ 'description': 'GPIO Task'} ) 
+    action : str                       = Field(default=None,json_schema_extra={ 'description': 'GPIO Task Action'} ) 
