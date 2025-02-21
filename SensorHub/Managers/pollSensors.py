@@ -101,13 +101,14 @@ def getDescriptions(pinW1) -> str:
 
 # Control GPIO Pins 
 def GPIOread(pin: gpio.Pins) -> gpio.Pins:
+    rprint('GPIO read :',pin)
     GPIO.setwarnings(False) 
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(pin.pin, GPIO.OUT)
-    rprint('Read ',pin)
+    rprint('GPIO Read :',pin)
     try:
        pin.value = GPIO.input(pin.pin)
-       print('read pin :',pin.value)
+       print('GPIO read pin :',pin.value)
        if pin.value == None :   pin.status = enums.GPIOstatus.ok
        else:                    pin.status = enums.GPIOstatus.unknown
        return pin
@@ -116,11 +117,13 @@ def GPIOread(pin: gpio.Pins) -> gpio.Pins:
        pin.value = -85
        pin.status = enums.GPIOstatus.error
        return pin
+    
 def GPIOset(pinReq:gpio.Pins,task:enums.GPIOtask) -> gpio.Pins:
-    print('relay')
+    rprint('GPIO set :',pinReq)
     currentPin=GPIOread(pinReq)
-    print('relay',currentPin)
+    rprint('GPIO set curr  :',currentPin)
     if currentPin.status != enums.GPIOstatus.ok:      return currentPin 
+    rprint('GPIO set value :')
 
     try:
        if   task == enums.GPIOtask.toggle and currentPin.value == 0 :
@@ -138,7 +141,9 @@ def GPIOset(pinReq:gpio.Pins,task:enums.GPIOtask) -> gpio.Pins:
         currentPin.value=-86
         rprint('[red]GPIO       : {}'.format(pinReq) )
         return currentPin
+    
 def GPIOinit(pin:gpio.PinChange) -> bool:
+    rprint('GPIO init')
     try:
        GPIO.setup(pin.pin, GPIO.OUT)
        rprint('[yellow]GPIO {} set to Out Relay '.format(pin.pin) )
@@ -153,7 +158,6 @@ def GPIOcontrol(pin):
         GPIO.setwarnings(False) 
         GPIO.setmode(GPIO.BCM)
         rprint('[yellow]Relay {} Status {}'.format(pin,GPIO.input(int(pin))) )
-
         return -999
     except Exception as ex:
         rprint('[red]Sensor {} Read Error : {}'.format(pin,ex) )
