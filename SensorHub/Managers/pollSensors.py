@@ -117,6 +117,7 @@ def GPIOset(pinReq:gpio.Pins,task:enums.GPIOtask) -> gpio.Pins:
     currentPin=GPIOread(pinReq)
     if currentPin.status != enums.GPIOstatus.ok:      return currentPin 
     GPIO.setup(pinReq.pin, GPIO.OUT)
+    rprint('[red]GPIO {} set too Out '.format(pinReq.pin) )
     try:
        if   task == enums.GPIOtask.toggle and currentPin.value == 0 :
                 GPIO.output(pinReq.pin, 1)
@@ -128,11 +129,20 @@ def GPIOset(pinReq:gpio.Pins,task:enums.GPIOtask) -> gpio.Pins:
        return  GPIOread(pinReq)
     
     except Exception as ex:
-        rprint('[red]Sensor {} Set Error : {}'.format(pinReq,ex) )
+        rprint('[red]GPIO Error : {}'.format(ex) )
         currentPin.status=enums.GPIOstatus.error
         currentPin.value=-86
+        rprint('[red]GPIO       : {}'.format(pinReq) )
         return currentPin
-
+def GPIOinit(pin:gpio.PinChange) -> bool:
+    try:
+       GPIO.setup(pin.pin, GPIO.OUT)
+       rprint('[red]GPIO {} set to Out '.format(pin.pin) )
+       return True
+    except Exception as ex:
+       rprint('[red]GPIO {} Pin Set Error : {}'.format(pin.pin,ex) )
+       return False
+    
 def GPIOcontrol(pin):
     rprint('[yellow]GPIO Control')
     try:

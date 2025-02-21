@@ -25,7 +25,8 @@ from Common.Config.helpers import get_api_version, get_project_root, get_api_det
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     rprint('Reset Relays :',getConfig().GPIOrelays)
     for relay in getConfig().GPIOrelays:
-        pollSensors.GPIOset( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out), task=enums.GPIOtask.off )
+        # pollSensors.GPIOset( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out), task=enums.GPIOtask.off )
+        pollSensors.GPIOinit( gpio.PinChange(pin=relay, task=enums.GPIOtask.off ) )
     yield
 
 app = FastAPI(
