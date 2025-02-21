@@ -100,7 +100,7 @@ def getDescriptions(pinW1) -> str:
     return ""
 
 # Control GPIO Pins 
-def GPIOread(pinReq:gpio.PinChange) -> gpio.PinsChange:
+def GPIOread(pinReq:gpio.PinChange) -> gpio.PinChange:
     GPIO.setwarnings(False) 
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(pinReq.pin, GPIO.OUT)
