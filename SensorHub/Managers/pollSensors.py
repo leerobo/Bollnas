@@ -104,6 +104,7 @@ def GPIOread(pin: gpio.Pins) -> gpio.Pins:
     GPIO.setwarnings(False) 
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(pin.pin, GPIO.OUT)
+    rprint('Read ',pin)
     try:
        pin.value = GPIO.input(pin.pin)
        pin.status = enums.GPIOstatus.ok
@@ -114,7 +115,6 @@ def GPIOread(pin: gpio.Pins) -> gpio.Pins:
        pin.status = enums.GPIOstatus.error
        return pin
 def GPIOset(pinReq:gpio.Pins,task:enums.GPIOtask) -> gpio.Pins:
-    GPIO.setup(pinReq.pin, GPIO.OUT)
     print('relay')
     currentPin=GPIOread(pinReq)
     print('relay',currentPin)
