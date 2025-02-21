@@ -100,50 +100,50 @@ def getDescriptions(pinW1) -> str:
     return ""
 
 # Control GPIO Pins 
-def GPIOread(pin: gpio.Pins) -> gpio.Pins:
-    rprint('GPIO read :',pin)
+def GPIOread(pinReq:gpio.PinChange) -> gpio.PinsChange:
     GPIO.setwarnings(False) 
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(pin.pin, GPIO.OUT)
-
+    GPIO.setup(pinReq.pin, GPIO.OUT)
     try:
-       pin.value = GPIO.input(pin.pin)
-       print('GPIO read pin :',pin)
-       if pin.value == None :   pin.status = enums.GPIOstatus.unknown
-       else:                    pin.status = enums.GPIOstatus.ok
-       return pin
+       pinReq.value = GPIO.input(pinReq.pin)
+       pinReq.status = enums.GPIOstatus.ok
+       return pinReq
     except Exception as ex:
-       rprint('[red]GPIO Read Error ',pin.pin,':',ex)
-       pin.value = -85
-       pin.status = enums.GPIOstatus.error
-       return pin
+       rprint('[red]GPIO Read Error ',pinReq.pin,':',ex)
+       pinReq.value = -85
+       pinReq.status = enums.GPIOstatus.error
+       return pinReq
     
-def GPIOset(pinReq:gpio.Pins,task:enums.GPIOtask) -> gpio.Pins:
-    rprint('GPIO set :',pinReq)
-    currentPin=GPIOread(pinReq)
-    rprint('GPIO set curr  :',currentPin)
-    if currentPin.status != enums.GPIOstatus.ok:      return currentPin 
-    rprint('GPIO set value :')
+def GPIOset(pinReq:gpio.PinChange) -> gpio.Pins:
+    pin = gpio.Pins(pin=pinReq.pin,pintype=enums.GPIOdeviceAttached.relay,status=enums.GPIOstatus.unknown)
+    pinRead=GPIOread(pinReq)
+    rprint(pinRead)
+    if pinRead.status != enums.GPIOstatus.ok:      return pin 
 
     try:
-       if   task == enums.GPIOtask.toggle and currentPin.value == 0 :
-                GPIO.output(pinReq.pin, 1)
-       elif task == enums.GPIOtask.toggle and currentPin.value == 1 :
-                GPIO.output(pinReq.pin, 0)
-       elif task == enums.GPIOtask.on :
-                GPIO.output(pinReq.pin, 0)
-       else :   GPIO.output(pinReq.pin, 1)
-       return  GPIOread(pinReq)
+       if   pinReq.task == enums.GPIOtask.toggle and pinRead.value == 0 :
+             GPIO.output(pinReq.pin, 1)
+             pin.value=1
+       elif pinReq.task == enums.GPIOtask.toggle and pinRead.value == 1 :
+             GPIO.output(pinReq.pin, 0)
+             pin.value=0
+       elif pinReq.task == enums.GPIOtask.on :
+             GPIO.output(pinReq.pin, 0)
+             pin.value=0
+       else : 
+             GPIO.output(pinReq.pin, 1)
+             pin.value=1
+
+       return  GPIOread(pin)
     
     except Exception as ex:
         rprint('[white with red background]GPIO Error : {}'.format(ex) )
-        currentPin.status=enums.GPIOstatus.error
-        currentPin.value=-86
+        pin.status=enums.GPIOstatus.error
+        pin.value=-86
         rprint('[red]GPIO       : {}'.format(pinReq) )
-        return currentPin
+        return pin
     
 def GPIOinit(pin:gpio.PinChange) -> bool:
-    rprint('GPIO init')
     try:
        GPIO.setup(pin.pin, GPIO.OUT)
        rprint('[yellow]GPIO {} set to Out Relay '.format(pin.pin) )
