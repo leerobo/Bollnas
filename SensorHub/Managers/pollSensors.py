@@ -112,7 +112,7 @@ def GPIOread(pinReq:gpio.PinChange) -> gpio.PinChange:
        rprint('[red]GPIO Read Error ',pinReq.pin,':',ex)
        pinReq.value = -85
        pinReq.status = enums.GPIOstatus.error
-       pinReq.reason = ex
+       pinReq.reason = str(ex)
        return pinReq
     
 def GPIOset(pinReq:gpio.PinChange) -> gpio.Pins:
@@ -141,7 +141,7 @@ def GPIOset(pinReq:gpio.PinChange) -> gpio.Pins:
         rprint('[white with red background]GPIO Error : {}'.format(ex) )
         pin.status=enums.GPIOstatus.error
         pin.value=-86
-        pin.reason = ex
+        pin.reason = str(ex)
         rprint('[red]GPIO       : {}'.format(pinReq) )
         return pin
     
