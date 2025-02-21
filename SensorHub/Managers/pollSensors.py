@@ -105,12 +105,12 @@ def GPIOread(pin: gpio.Pins) -> gpio.Pins:
     GPIO.setwarnings(False) 
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(pin.pin, GPIO.OUT)
-    rprint('GPIO Read :',pin)
+
     try:
        pin.value = GPIO.input(pin.pin)
-       print('GPIO read pin :',pin.value)
-       if pin.value == None :   pin.status = enums.GPIOstatus.ok
-       else:                    pin.status = enums.GPIOstatus.unknown
+       print('GPIO read pin :',pin)
+       if pin.value == None :   pin.status = enums.GPIOstatus.unknown
+       else:                    pin.status = enums.GPIOstatus.ok
        return pin
     except Exception as ex:
        rprint('[red]GPIO Read Error ',pin.pin,':',ex)
