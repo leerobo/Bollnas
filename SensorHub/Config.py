@@ -74,9 +74,9 @@ This allowed me to see realtime the RPIs status via the controllers Status API a
     wire1description: dict[str, str] =  {}
 
     # relays BCD
-    relays: bool = False
-    GPIOrelays: list[int] = []
-    GPIOdescription: dict
+    relays: bool = True
+    GPIOrelays: list[int] = [26]
+    GPIOdescription: dict[str, str] =  {}
 
    # Zigbee
     zigbee: bool = False
@@ -86,13 +86,11 @@ This allowed me to see realtime the RPIs status via the controllers Status API a
     @field_validator("wire1description","GPIOdescription")
     @classmethod
     def w1d(cls: type[Settings], value: str) -> str:
-        print('---------------',type(value),value)
         return value    
     
 @lru_cache
 def getConfig() -> Settings:
     """Return the current settings."""
     Settings.model_rebuild()
-    print('getConfig 2')
     return Settings()
 

@@ -34,6 +34,7 @@ Common.settings holds generic parms, .env holds parms that are secret to you,  s
 Create a Venv area on the RPI and download required packages
 ``` bash
 sudo python3 -m venv venv
+sudo chown pi:pi venv -R
 source  venv/bin/activate
 python3 -m pip install -r requirements.txt
 ```
@@ -117,4 +118,12 @@ polling the controller .
 ### Reference
 - GitHub : leerobo/bollnas
 - Docker Hub :
+
+### GitHub 
+
+Pull code, setup venv and run
+git clone https://github.com/leerobo/Bollnas.git
+git pull origin main
+
+
 
