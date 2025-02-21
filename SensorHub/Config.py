@@ -69,9 +69,9 @@ This allowed me to see realtime the RPIs status via the controllers Status API a
     netgear_password: str = ""
 
     # Wire1 Directory 
-    wire1: bool = False
+    wire1: bool = True
     wire1dir: str = "/sys/bus/w1/devices/"
-    wire1description: dict
+    wire1description: dict[str, str] =  {}
 
     # relays BCD
     relays: bool = False
