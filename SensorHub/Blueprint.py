@@ -53,10 +53,10 @@ def relay(task:gpio.PinChange):
     if task.pin == 0:  # Carry out task on all Relays
        rtn=[]
        for relay in getConfig().GPIOrelays:
-          rtn.append(pollSensors.GPIOset( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out), task=task.task ))
+          rtn.append(pollSensors.GPIOset( task ) )
        return rtn
     
     if task.pin not in getConfig().GPIOrelays:
        return error.response(message='Pin not Defined as Relay - see GPIOrelays in settings')
     
-    return pollSensors.GPIOset( gpio.Pins( pin=task.pin,pintype=enums.GPIOdeviceAttached.relay,direction=enums.GPIOdirection.out), task=task.task )
+    return pollSensors.GPIOset( pollSensors.GPIOset( task ))
