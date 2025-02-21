@@ -107,6 +107,7 @@ def GPIOread(pin: gpio.Pins) -> gpio.Pins:
     rprint('Read ',pin)
     try:
        pin.value = GPIO.input(pin.pin)
+       print('read pin :',pin.value)
        if pin.value == None :   pin.status = enums.GPIOstatus.ok
        else:                    pin.status = enums.GPIOstatus.unknown
        return pin
