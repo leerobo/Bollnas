@@ -21,15 +21,17 @@ import Common.Models.enums as enums
 router = APIRouter(tags=["sensorHub"])
 rprint('Blueprint Loading')
 
-@router.get("/info",status_code=status.HTTP_200_OK,
-    name="Ping SensonHub",
+@router.get("/ping",status_code=status.HTTP_200_OK,
+    name="Ping SensonHub Gateway",
     description='Ping Device and return back descriptive information',    
     response_model=Ping.PingResponse
 )
 def ping():
     return Ping.PingResponse(name=getConfig().api_title, 
               description=getConfig().api_description, 
+              location=getConfig().api_location, 
               devicetype=enums.DeviceType.sensorhub,
+              Secure=getConfig().security,
               wire1=getConfig().wire1,
               relays=getConfig().relay,
               zigbee=getConfig().zigbee
@@ -44,20 +46,33 @@ async def poll():
     """ Force Poll of all attached sensors and store values , return findings """
     return await pollSensors.poll()
 
-if getConfig().relays:
-    @router.post("/relay",status_code=status.HTTP_200_OK,
-        name="Relay Control ",
+
+@router.post("/relay",status_code=status.HTTP_200_OK,
+     name="Relay Control ",
         description='Relay controller to toggle,switch on or off GPIO Pins',
         response_model=Union[gpio.Pins,list[gpio.Pins],error.response]
-    )
-    def relay(task:gpio.PinChange):
-        if task.pin == 0:  # Carry out task on all Relays
-            rtn=[]
-            for relay in getConfig().GPIOrelays:
-                rtn.append(pollSensors.GPIOset( task ) )
-            return rtn
+)
+def relay(task:gpio.PinChange):
+    if len(getConfig().GPIOrelays) == 0 :
+       return error.response(message='No Relay Pin Defined for this Device')
+        
+    if task.pin == 0:  
+       rtn=[]
+       for relay in getConfig().GPIOrelays:
+           rtn.append(pollSensors.GPIOset( task ) )
+       return rtn
 
-        if task.pin not in getConfig().GPIOrelays:
-            return error.response(message='Pin not Defined as Relay - see GPIOrelays in settings')
+    if task.pin not in getConfig().GPIOrelays:
+       return error.response(message='Pin not Defined as Relay - see GPIOrelays in settings')
 
-        return pollSensors.GPIOset( pollSensors.GPIOset( task ))
+    return pollSensors.GPIOset( pollSensors.GPIOset( task ))
+
+@router.get("/poll",status_code=status.HTTP_200_OK,
+    name="Poll Sensor Status",
+    description='Force a Poll on all Attached Sensors & Switches and cache results',
+    response_model=dict
+)
+async def poll():
+    """ Force Poll of all attached sensors and store values , return findings """
+    return await pollSensors.poll()
+

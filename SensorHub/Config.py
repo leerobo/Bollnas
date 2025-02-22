@@ -13,6 +13,7 @@ from pydantic import field_validator,BaseModel,Field,ConfigDict
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from Common.Config.helpers import get_project_root
+import Common.Models.enums as enums
 
  
 class Settings(BaseSettings):
@@ -42,9 +43,6 @@ class Settings(BaseSettings):
 
     cors_origins: str = "*"
 
-     # JTW secret Key
-    secret_key: str = "1F24921CEADCE4E0113C84EFA60A9802"  # noqa: S105
-    access_token_expire_minutes: int = 7200
 
     # Custom Metadata
     api_title: str = 'The Bollnas Project'
@@ -54,7 +52,8 @@ class Settings(BaseSettings):
 This allowed me to see realtime the RPIs status via the controllers Status API and uses the promethues Client repos to allow my main server to get the info and store it. 
          The sensorshub polls the sensors and relay pins and stores the settings ready for the next controller request,  
          it can also accept requests to toggle the relay pins via the controller. """
-
+    api_location: str = ""
+    
     repository: str = """ github : leerobo/bollnas """
     contact: dict[str, str] =  {"Author":"lee@ssshhhh.com"}
     year: str = "2025"
@@ -67,6 +66,14 @@ This allowed me to see realtime the RPIs status via the controllers Status API a
     dns: str ="192.168.1.1"
     sensorHub_port: str ="14121"
     netgear_password: str = ""
+
+
+    # Security
+    security = False
+    securityKey = enums.SecurityLevel.off
+    key = ""
+    pem = "/cert/jwt.pem"
+
 
     # Wire1 Directory 
     wire1: bool = True

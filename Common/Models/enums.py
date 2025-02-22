@@ -65,3 +65,11 @@ class GPIOtask(Enum):
     toggle      = "toggle"
     on          = "on"   
     off         = "off"   
+
+# Security
+class SecurityLevel(Enum):
+    off            = "off"  
+    apiKey         = "apiKey"  
+    jwt            = "jwt"  
+    password       = "**pa$$word**"  
+    
