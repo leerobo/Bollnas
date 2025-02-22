@@ -68,7 +68,9 @@ This allowed me to see realtime the RPIs status via the controllers Status API a
     netgear_password: str = ""
 
 
-    # Security
+    # Security covers all LAN local devices between Controller and SensorHubs
+    # keys and Certs are LAN based and are used if the security flag is True
+    # its advisable to place Cert outside of the code in a more secure folder on the device
     security = False
     securityKey = enums.SecurityLevel.off
     key = ""
