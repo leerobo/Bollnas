@@ -8,10 +8,7 @@ class PingResponse(BaseModel):
     description: str                      = Field(default=None,json_schema_extra={ 'description': 'SensorHub Description'} ) 
     devicetype: enums.DeviceType          = Field(default=enums.DeviceType.unknown,json_schema_extra={ 'description': 'Sensor Value'} )  
     security: bool                        = Field(default=False,json_schema_extra={ 'description': 'Secure'} ) 
-    security_level: enums.SecurityLevel   = Field(default=enums.SecurityLevel.off,json_schema_extra={ 'description': 'Security Level'} ) 
-
-    security = True
-
+    securityKey: enums.SecurityLevel      = Field(default=enums.SecurityLevel.off,json_schema_extra={ 'description': 'Security Level'} ) 
     wire1:  bool                          = Field(default=False,json_schema_extra={ 'description': 'Wire1 Presents'} ) 
     relays: bool                          = Field(default=False,json_schema_extra={ 'description': 'Relay Present'} ) 
     zigbee: bool                          = Field(default=False,json_schema_extra={ 'description': 'Zigbee Hat Present'} ) 
