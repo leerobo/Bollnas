@@ -44,19 +44,20 @@ async def poll():
     """ Force Poll of all attached sensors and store values , return findings """
     return await pollSensors.poll()
 
-@router.post("/relay",status_code=status.HTTP_200_OK,
-    name="Relay Control ",
-    description='Relay controller to toggle,switch on or off GPIO Pins',
-    response_model=Union[gpio.Pins,list[gpio.Pins],error.response]
-)
-def relay(task:gpio.PinChange):
-    if task.pin == 0:  # Carry out task on all Relays
-       rtn=[]
-       for relay in getConfig().GPIOrelays:
-          rtn.append(pollSensors.GPIOset( task ) )
-       return rtn
-    
-    if task.pin not in getConfig().GPIOrelays:
-       return error.response(message='Pin not Defined as Relay - see GPIOrelays in settings')
-    
-    return pollSensors.GPIOset( pollSensors.GPIOset( task ))
+if getConfig().relays:
+    @router.post("/relay",status_code=status.HTTP_200_OK,
+        name="Relay Control ",
+        description='Relay controller to toggle,switch on or off GPIO Pins',
+        response_model=Union[gpio.Pins,list[gpio.Pins],error.response]
+    )
+    def relay(task:gpio.PinChange):
+        if task.pin == 0:  # Carry out task on all Relays
+            rtn=[]
+            for relay in getConfig().GPIOrelays:
+                rtn.append(pollSensors.GPIOset( task ) )
+            return rtn
+
+        if task.pin not in getConfig().GPIOrelays:
+            return error.response(message='Pin not Defined as Relay - see GPIOrelays in settings')
+
+        return pollSensors.GPIOset( pollSensors.GPIOset( task ))
