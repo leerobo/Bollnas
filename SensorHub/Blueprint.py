@@ -31,8 +31,8 @@ def ping():
               description=getConfig().api_description, 
               location=getConfig().api_location, 
               devicetype=enums.DeviceType.sensorhub,
-              secure=getConfig().security,
-              secure_level=getConfig().securityKey,
+              security=getConfig().security,
+              securityKey=getConfig().securityKey,
               wire1=getConfig().wire1,
               relays=getConfig().relay,
               zigbee=getConfig().zigbee
