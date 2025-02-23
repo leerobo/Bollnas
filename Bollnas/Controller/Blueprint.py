@@ -7,9 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from rich import print as rprint                          ## Pretty Print
 import requests, datetime
 
-from Controller.Managers.hubScanner import scan_lan       ## Hub Scanners
-import Controller.Managers.redis as redis                 
-from Controller.Config import getConfig
+from Common.Managers.hubScanner import scan_lan       ## Hub Scanners
+import Common.Managers.redis as redis                 
+from Common.Config import getConfig
 
 #from Common.Schemas.cached import Controller              ## Schemas
 import Common.Schemas.scannerHubs as Hubs
@@ -73,6 +73,7 @@ async def scan_hubs():                                      #  Scan Available se
           else:  
             cachedData=await redis.get_cache(keys=getHubs.name)
             sensorSchema=Poll.Poll(**cachedData)
+            
       except Exception as ex:
             rprint("[yellow]CNTL:     [/yellow][red]Dynamic Polling[/red]",ex)
             sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getConfig().sensorHub_port))
@@ -84,7 +85,7 @@ async def scan_hubs():                                      #  Scan Available se
       rtn.polls[getHubs.name]=sensorSchema
       #rtn[getHubs.name]=sensorSchema
 
-      # ---- Setup metrics
+      # ---- Setup metrics    TODO : Needs some work
       for pins in sensorSchema.GPIOsettings:
          if pins.status == enums.GPIOstatus.ok:
             if pins.description != '': SubDesc='P'+str(pins.pin)+'-'+pins.description
@@ -104,6 +105,7 @@ async def scan_hubs():                                      #  Scan Available se
                   else :                e.state('off')
             except Exception as ex:
                rprint("[red]CNTL:     [/red]",regName,':',ex)
+
       for W1 in sensorSchema.wire1Sensors:
             if W1.description != '': SubDesc=W1.id+'_'+W1.description
             else : SubDesc=W1.id
@@ -125,54 +127,4 @@ async def scan_hubs():                                      #  Scan Available se
     return rtn
 
 
-      
-
-
-
-# async def get_sensors():
-#     """ using the latest Polled data, setup the Sensor Client using promethues """
-#     try:
-#       sensors = await get_cache('bollnas')
-#     except Exception as e:
-#       print(e)
-#       return []  
-    
-#     print(sensors)
-#     print('---------------------------------------------')
-#     print('Sensor Controller :',sensors['name'])
-#     print('Sensor Timestamp  :',sensors['timestamp'])
-#     rtn=[]
-
-#     for sh in sensors['hubs']:
-#         g = Gauge(sensors['name'],sh['name'])
-#         for s in sh['sensors']:
-#           print('>>> Sensors Hub:',sh['name'],s['name'])
-#           g.set(4.2)   # Set to a given value
-#           g.set_to_current_time()
-#           g.set_function(lambda: 5.2)  # Set to the result of a function
-#           rtn.append(g)
-#           print('G:',g.collect())        
-
-#     print(rtn)    
-
-        
    
-#    #g = Gauge('my_inprogress_requests', 'Description of gauge')
-#    #g.set(4.2)   # Set to a given value
-#    #g.set_to_current_time()
-#    #g.set_function(lambda: 4.2)  # Set to the result of a function
-#    #print(g.collect())        
-
-
-      
-#     return  None
-
-
-
-#     print()
-#     rprint(scannHub)
-
-
-#     return scannHub
- 
-

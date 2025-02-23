@@ -1,7 +1,7 @@
 import redis
 from pydantic_settings import BaseSettings, SettingsConfigDict
 # from Common.Models.cached import  Controller,Sensorhub,Sensor
-from Controller.Config import getConfig
+from Common.Config import getConfig
 import datetime,json
 from rich import print as rprint
 

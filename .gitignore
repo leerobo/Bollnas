@@ -15,6 +15,5 @@ __pycache__/
 *.bak
 
 # Dev drops
-Bollnas/*
 *.env
 prometheus_multiproc_dir/

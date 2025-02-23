@@ -11,15 +11,14 @@ import Common.Schemas.Sensors.gpio as gpio
 import Common.Schemas.error as error
 
 from rich import print as rprint
-from  SensorHub.Config import getConfig
-import SensorHub.Managers.pollSensors as pollSensors
+from  Common.Config import getConfig
+import Common.Managers.pollSensors as pollSensors
 import Common.Models.enums as enums
 
 #from schemas.request.user import UserLoginRequest, UserRegisterRequest
 #from schemas.response.auth import TokenRefreshResponse, TokenResponse
 
 router = APIRouter(tags=["sensorHub"])
-rprint('Blueprint Loading')
 
 @router.get("/ping",status_code=status.HTTP_200_OK,
     name="Ping SensonHub Gateway",

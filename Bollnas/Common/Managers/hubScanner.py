@@ -1,19 +1,11 @@
 """Define the network scanner manager."""
 from __future__ import annotations
-
-# from pathlib import Path
-# from typing import TYPE_CHECKING, Optional
-
-# from fastapi import BackgroundTasks  # noqa: TC002
-# from fastapi.responses import JSONResponse
-#from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-
 from rich import print as rprint
-
 from Common.Schemas.scannerHubs import Hubs,Hub
 from pynetgear import Netgear
+from Common.Config import getConfig
+
 import requests
-from Controller.Config import getConfig
 
 def scan_lan() -> Hubs:
     Attached_list={}
@@ -24,8 +16,8 @@ def scan_lan() -> Hubs:
       netgear = Netgear(password=getConfig().netgear_password)
       rprint("[orange3]CNTL:     [/orange3][yellow]Scanning Netgear Router[/yellow]" )      
 
-      if netgear.login_try_port() :        
-        for i in netgear.get_attached_devices():                        # namedTuple Device List
+      if netgear.login_try_port() :    
+        for i in netgear.get_attached_devices_2():                        # namedTuple Device List
            if i.name != None:
              if i.name not in Attached_list  :  Attached_list[i.name]=i
              if i.type == 'wired' and Attached_list[i.name].type == 'wireless' :  Attached_list[i.name]=i
@@ -44,14 +36,29 @@ def scan_lan() -> Hubs:
     # find the SenorHubs
     SensorHubsFound=[]
     for i in Attached_list:
-      #rprint('Scanner List',Attached_list[i])
+      #  rprint('\nScanner List',Attached_list[i])
       try:
-        x = requests.get('http://{}:{}/ping'.format(Attached_list[i].ip,getConfig().sensorHub_port ),timeout=1)      
-        SensorHubsFound.append(Hub.from_list(Attached_list[i]))
-        rprint("[orange3]CNTL:     [/orange3][yellow]Hub Attached",Attached_list[i].ip,' on Port ',getConfig().sensorHub_port )
-      except Exception as e:
-        # rprint("[yellow]  -  Not Connect")
+        x = requests.get('http://{}:{}/ping'.format(Attached_list[i].ip,getConfig().sensorHub_port ),timeout=1) 
+        if x.status_code == 200 : 
+          hubDetails=Hub(**Attached_list[i]._asdict())
+          hubDetails.secure=x.json()['security']
+          SensorHubsFound.append( hubDetails )
+          rprint("[orange3]CNTL:     [/orange3]",Attached_list[i].ip,"[yellow] Hub Attachedon Port [/yellow] ",getConfig().sensorHub_port )
+        else:   
+          rprint("[orange3]CNTL:     [/orange3]",Attached_list[i].ip,"[yellow] Port Found, Bad Response[/yellow] (",x.status_code,")")
+
+      except requests.exceptions.ConnectionError as e:
+        # rprint("[yellow]Warning   :[/yellow]Connection Error - ",Attached_list[i].ip,' >>>> ',e)
+        pass
+      except requests.exceptions.HTTPError as e:
+        # rprint("[yellow]Warning   :[/yellow]HTTP Error - ",Attached_list[i].ip,' >>>> ',e)
+        pass
+      except requests.exceptions.RequestException as e:
+        # rprint("[yellow]Warning   :[/yellow]Request Error - ",Attached_list[i].ip,' >>>> ',e)
         pass
 
+      except Exception as e:
+        rprint("[red]Error   :[/red]Response Error - ",Attached_list[i].ip,' >>>> ',e)
+        pass
       
     return  Hubs(count=len(SensorHubsFound),SensorHubs=SensorHubsFound)

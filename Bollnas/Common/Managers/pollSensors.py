@@ -13,9 +13,10 @@ from typing import Union
 import Common.Schemas.Sensors.gpio as gpio
 import Common.Schemas.Sensors.wire1 as wire1
 import Common.Models.enums as enums
+from Common.Config import getConfig  
 
 from rich import print as rprint
-from SensorHub.Config import getConfig  
+
 async def poll(): 
     rtn={}
     rtn['timestamp']=str(datetime.datetime.now())
@@ -148,7 +149,7 @@ def GPIOset(pinReq:gpio.PinChange) -> gpio.Pins:
 def GPIOinit(pin:gpio.PinChange) -> bool:
     try:
        GPIO.setup(pin.pin, GPIO.OUT)
-       rprint('[yellow]GPIO {} set to Out Relay '.format(pin.pin) )
+       # rprint('[yellow]GPIO {} set to Out Relay '.format(pin.pin) )
        return True
     except Exception as ex:
        rprint('[red]GPIO {} Pin Set Error : {}'.format(pin.pin,ex) )

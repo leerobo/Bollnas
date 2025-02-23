@@ -11,21 +11,23 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from rich import print as rprint
 
-import SensorHub.Blueprint as bluePrint
-import SensorHub.Managers.pollSensors as pollSensors
+import SensorHub.Blueprint as SensorhubRouter
+import Controller.Blueprint as ControllerRouter
 
-from  SensorHub.Config import getConfig
+import Common.Managers.pollSensors as pollSensors
+
+from   Common.Config import getConfig
 import Common.Schemas.Sensors.wire1 as wire1
 import Common.Schemas.Sensors.gpio as gpio
 import Common.Models.enums as enums
-from Common.Config.helpers import get_api_version, get_project_root, get_api_details
-
+from   Common.helpers import get_api_version, get_project_root, get_api_details
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    rprint('Reset Relays :',getConfig().GPIOrelays)
+    rprint('[blue]INFO:    [/blue] Initiated Routines Running')
     for relay in getConfig().GPIOrelays:
-        pollSensors.GPIOinit( gpio.PinChange(pin=relay, task=enums.GPIOtask.off ) )
+        pollSensors.GPIOinit( gpio.PinChange( pin=relay, task=enums.GPIOtask.off ) )
+    rprint('[blue]INFO:    [/blue] Initiated Routines Complete')        
     yield
 
 app = FastAPI(
@@ -40,8 +42,9 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-rprint("[orange3]CNTL:     [/orange3]Loaded SensorHub ")
-app.include_router(bluePrint.router)
+rprint('[blue]INFO:    [/blue] Router Settings Loading : '+str(getConfig().GPIOrelays))
+if os.getenv("CONTROLLER") == 'True' :  app.include_router(ControllerRouter.router)
+if os.getenv("SENSORHUB")  == 'True' :  app.include_router(SensorhubRouter.router)
 
 static_dir = get_project_root() / "static"
 
