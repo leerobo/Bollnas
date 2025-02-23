@@ -103,12 +103,28 @@ polling the controller .
 - GitHub : leerobo/bollnas
 - Docker Hub :
 
+
+
+
+
+
 ## Setup Enviroment 
 
 Make Directory Github/Bollnas.
 
-### Venv
+#### Install GIT
+change main to the branch your working on
+``` bash
+sudo apt install git
+git config --global user.name "myGitHubUser"
+git config --global user.email myEmail@example.com
+git config --list
 
+git clone https://github.com/leerobo/Bollnas.git
+git pull origin main
+```
+
+#### Venv
 Create a Venv area on the RPI and download required packages
 ``` bash
 sudo python3 -m venv venv
@@ -117,14 +133,16 @@ source  venv/bin/activate
 python3 -m pip install -r requirements.txt
 ```
 
-Install GIT
+### Setup Enviroments fields
+
+the devices can run as both or either controller and sensorhub,  the two enviroment variables CONTROLLER and SENSORHUB will load up the correct endpoints (routers) 
 ``` bash
-sudo apt install git
-git config --global user.name "myGitHubUser"
-git config --global user.email myEmail@example.com
-git config --list
-git clone https://github.com/leerobo/Bollnas.git
+export CONTROLLER=False
+export SENSORHUB=True
+echo "Github Update"
 git pull origin main
+echo "Github API start "
+fastapi dev runapp.py --port 14121 --host 0.0.0.0 
 ```
 
 #### Setup Controller
@@ -162,8 +180,13 @@ zigbee = False
 
 ### Run 
 
-sensorhub runs within the venv area, which means it has access to RPi.gpio (unlike docker - can use pigpio if you want docker), Ammend the Scripts.sensorhub.service if you wish to use a different port number
+#### direct
+``` bash
+cd Bollnas
+./run.sh
+```
 
+#### systemd
 Run These to create the service 
 ``` bash
 sudo cp /home/pi/Github/Bollnas/Scripts/sensorhub.service /lib/systemd/system/
@@ -182,10 +205,20 @@ journalctl -u sensorhub.service
 
 ```
 
+#### Docker
+Trouble here is that RPI.gpio need permission to device,  was thinking to use
+PIGPIO or play around with the docker compose abit more ... TODO list
+
 to test go to your web browser and enter your http://<RPi ip>:14121/docs
 
-To find your IP address
+
+#### Test
+To find your IP address, for local use 127.0.0.1 or accessing a difference device use
+
 ``` bash
 ip a
 # Look at eth0/wlan0 for the inet number 
 ```
+
+if your on the same device then use <ip>:14120/Docs 
+
