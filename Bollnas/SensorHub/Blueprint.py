@@ -67,7 +67,7 @@ def relay(task:gpio.PinChange):
     if task.pin not in getConfig().GPIOrelays:
        return error.response(message='Pin not Defined as Relay - see GPIOrelays in settings')
 
-    return pollSensors.GPIOset( pollSensors.GPIOset( task ))
+    return  pollSensors.GPIOset( task )
 
 @router.get("/poll",status_code=status.HTTP_200_OK,
     name="Poll Sensor Status",
