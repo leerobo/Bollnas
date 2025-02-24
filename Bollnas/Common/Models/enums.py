@@ -62,6 +62,7 @@ class GPIOstatus(Enum):
 
 class GPIOtask(Enum):
     """ GPIO Task """
+    read        = "read"
     toggle      = "toggle"
     on          = "on"   
     off         = "off"   

@@ -81,11 +81,15 @@ def pollGPIO()  -> list[gpio.Pins]:
         GPIO.setwarnings(False) 
         GPIO.setmode(GPIO.BCM)
         for relay in getConfig().GPIOrelays:
-            # GPIO.setup(int(relay), GPIO.OUT)
-            rtn.append( GPIOread( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,
-                                            direction=enums.GPIOdirection.out,
-                                            status=enums.GPIOstatus.ok,
-                                            description=getDescriptions(relay))  ) )
+            print('relay ',relay)
+            pinDetails=GPIOread( gpio.PinChange(pin=relay,task=enums.GPIOtask.read) )
+            print(pinDetails) 
+
+            # rtn.append( GPIOread( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,
+            #                                 direction=enums.GPIOdirection.out,
+            #                                 status=enums.GPIOstatus.ok,
+            #                                 description=getDescriptions(relay))  ) )
+       
     except Exception as ex:
         rprint('[red]Sensor {} Read Error : {}'.format(relay,ex) )
         rtn.append( GPIOread( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,
