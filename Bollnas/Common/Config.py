@@ -89,7 +89,7 @@ class Settings(BaseSettings):
     wire1description: dict[str, str]  =  {}
 
     # relays BCD
-    relays: bool = True
+    relay: bool = True
     GPIOrelays: list[int] = [26]
     GPIOdescription: dict[str, str] =  {}
 
