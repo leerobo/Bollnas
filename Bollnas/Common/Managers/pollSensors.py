@@ -129,8 +129,6 @@ def GPIOset(pinReq:gpio.PinChange) -> gpio.Pins:
     GPIO.setmode(GPIO.BCM)
     pin = gpio.Pins(pin=pinReq.pin,pintype=enums.GPIOdeviceAttached.relay,status=enums.GPIOstatus.unknown)
     pinRead=GPIOread(pinReq)
-    rprint(pinRead)
-    rprint(pinReq)
     if pinRead.status != enums.GPIOstatus.ok:      return pin 
 
     try:
