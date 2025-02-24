@@ -1,21 +1,21 @@
 #!/usr/bin python3
+from rich import print as rprint
 try:
     # checks if you have access to RPi.GPIO, which is available inside RPi
     import RPi.GPIO as GPIO
 except:
     # In case of exception, you are executing your script outside of RPi, so import Mock.GPIO
+    rprint("[yellow]WARNING:     [/yellow]Running Mock GPIO on non RPI Device")
     import Mock.GPIO as GPIO
     
 import sys, os, time, datetime, glob
-from array import array
-from typing import Union
+# from array import array
+# from typing import Union
 
 import Common.Schemas.Sensors.gpio as gpio
 import Common.Schemas.Sensors.wire1 as wire1
 import Common.Models.enums as enums
 from Common.Config import getConfig  
-
-from rich import print as rprint
 
 async def poll(): 
     rtn={}
