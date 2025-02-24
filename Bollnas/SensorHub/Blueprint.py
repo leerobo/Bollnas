@@ -33,7 +33,7 @@ def ping():
               security=getConfig().security,
               securityKey=getConfig().securityKey,
               wire1=getConfig().wire1,
-              relays=getConfig().relay,
+              relay=getConfig().relay,
               zigbee=getConfig().zigbee
             )
 
