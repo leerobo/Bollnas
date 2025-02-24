@@ -87,11 +87,12 @@ def pollGPIO()  -> list[gpio.Pins]:
             if pinDetails.value == None:
                pinDetails.value = -88
                pinDetails.reason = 'Unknown State Found'  
-               
+
             rtn.append( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,
                                   direction=enums.GPIOdirection.out,
                                   status=pinDetails.status,
                                   value=pinDetails.value,
+                                  reason=pinDetails.reason,
                                   description=getDescriptions(relay))  ) 
        
     except Exception as ex:
@@ -155,9 +156,10 @@ def GPIOset(pinReq:gpio.PinChange) -> gpio.Pins:
         return pin
     
 def GPIOinit(pin:gpio.PinChange) -> bool:
+    GPIO.setmode(GPIO.BCM)
     try:
        GPIO.setup(pin.pin, GPIO.OUT)
-       # rprint('[yellow]GPIO {} set to Out Relay '.format(pin.pin) )
+       rprint('[yellow]GPIO {} set to Out Relay '.format(pin.pin) )
        return True
     except Exception as ex:
        rprint('[red]GPIO {} Pin Set Error : {}'.format(pin.pin,ex) )
