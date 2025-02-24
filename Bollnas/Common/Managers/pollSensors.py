@@ -126,6 +126,7 @@ def GPIOread(pinReq:gpio.PinChange) -> gpio.PinChange:
        return pinReq
     
 def GPIOset(pinReq:gpio.PinChange) -> gpio.Pins:
+    GPIO.setmode(GPIO.BCM)
     pin = gpio.Pins(pin=pinReq.pin,pintype=enums.GPIOdeviceAttached.relay,status=enums.GPIOstatus.unknown)
     pinRead=GPIOread(pinReq)
     rprint(pinRead)
@@ -157,8 +158,9 @@ def GPIOset(pinReq:gpio.PinChange) -> gpio.Pins:
     
 def GPIOinit(pin:gpio.PinChange) -> bool:
     GPIO.setmode(GPIO.BCM)
+    rprint(pin)
     try:
-       GPIO.setup(pin.pin, GPIO.OUT)
+       GPIO.setup(pin.pin, GPIO.OUT, initial= 1)
        rprint('[yellow]GPIO {} set to Out Relay '.format(pin.pin) )
        return True
     except Exception as ex:
