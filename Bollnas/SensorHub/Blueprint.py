@@ -60,6 +60,7 @@ def relay(task:gpio.PinChange):
     if task.pin == 0:  
        rtn=[]
        for relay in getConfig().GPIOrelays:
+           task.pin = relay
            rtn.append(pollSensors.GPIOset( task ) )
        return rtn
 

@@ -5,7 +5,7 @@ try:
     import RPi.GPIO as GPIO
 except:
     # In case of exception, you are executing your script outside of RPi, so import Mock.GPIO
-    rprint("[yellow]WARNING:     [/yellow]Running Mock GPIO on non RPI Device")
+    rprint("[yellow]WARNING:     [/yellow]Running Mock GPIO on non RPI Device > pip install rpi.gpio")
     import Mock.GPIO as GPIO
     
 import sys, os, time, datetime, glob
@@ -130,6 +130,7 @@ def GPIOset(pinReq:gpio.PinChange) -> gpio.Pins:
     pin = gpio.Pins(pin=pinReq.pin,pintype=enums.GPIOdeviceAttached.relay,status=enums.GPIOstatus.unknown)
     pinRead=GPIOread(pinReq)
     rprint(pinRead)
+    rprint(pinReq)
     if pinRead.status != enums.GPIOstatus.ok:      return pin 
 
     try:
