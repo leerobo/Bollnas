@@ -160,7 +160,7 @@ def GPIOinit(pin:gpio.PinChange) -> bool:
     rprint(pin)
     try:
        GPIO.setup(pin.pin, GPIO.OUT, initial= 1)
-       rprint('[yellow]GPIO {} set to Out Relay '.format(pin.pin) )
+       #rprint('[yellow]GPIO {} set to Out Relay '.format(pin.pin) )
        return True
     except Exception as ex:
        rprint('[red]GPIO {} Pin Set Error : {}'.format(pin.pin,ex) )

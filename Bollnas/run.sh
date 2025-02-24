@@ -1,4 +1,5 @@
-if [ "$1" == "controller" ]; then 
+#!/bin/bash
+if [ "$1" == "controller" ]; then
  echo "Controller Device"
  export CONTROLLER=True
  export SENSORHUB=False
@@ -15,4 +16,6 @@ fi
 echo "Github Update"
 git pull origin sensorhub
 echo "Github API start "
-fastapi dev runapp.py --port 14121 --host 0.0.0.0 
+cd /home/pi/Github/Bollnas
+
+/home/pi/Github/Bollnas/venv/bin/python3 /home/pi/Github/Bollnas/venv/bin/fastapi dev /home/pi/Github/Bollnas/Bollnas/runapp.py --port 14121 --host 0.0.0.0
