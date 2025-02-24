@@ -89,8 +89,8 @@ class Settings(BaseSettings):
     wire1description: dict[str, str]  =  {}
 
     # relays BCD
-    relay: bool = True
-    GPIOrelays: list[int] = [26]
+    relay: bool = False
+    GPIOrelays: list[int] = [5,6,12,26]
     GPIOdescription: dict[str, str] =  {}
 
    # Zigbee

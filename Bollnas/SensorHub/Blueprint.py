@@ -37,6 +37,7 @@ def ping():
               zigbee=getConfig().zigbee
             )
 
+
 @router.get("/poll",status_code=status.HTTP_200_OK,
     name="Poll Sensor Status",
     description='Force a Poll on all Attached Sensors & Switches and cache results',
