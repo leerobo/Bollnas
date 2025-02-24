@@ -145,7 +145,7 @@ def GPIOset(pinReq:gpio.PinChange) -> gpio.Pins:
              GPIO.output(pinReq.pin, 1)
              pin.value=1
 
-       return  GPIOread(pin)
+       return  pin
     
     except Exception as ex:
         rprint('[red]GPIO Error : {}'.format(ex) )
