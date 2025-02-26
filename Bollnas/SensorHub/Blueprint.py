@@ -47,7 +47,6 @@ async def poll():
     """ Force Poll of all attached sensors and store values , return findings """
     return await pollSensors.poll()
 
-
 @router.post("/relay",status_code=status.HTTP_200_OK,
      name="Relay Control ",
         description='Relay controller to toggle,switch on or off GPIO Pins',
@@ -69,12 +68,12 @@ def relay(task:gpio.PinChange):
 
     return  pollSensors.GPIOset( task )
 
-@router.get("/poll",status_code=status.HTTP_200_OK,
-    name="Poll Sensor Status",
+@router.get("/poll2",status_code=status.HTTP_200_OK,
+    name="Poll2 Sensor Status",
     description='Force a Poll on all Attached Sensors & Switches and cache results',
     response_model=dict
 )
-async def poll():
+async def poll2():
     """ Force Poll of all attached sensors and store values , return findings """
     return await pollSensors.poll()
 

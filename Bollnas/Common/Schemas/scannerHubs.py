@@ -12,7 +12,6 @@ class Hub(CustomBaseModel):
     model_config            = ConfigDict(extra="allow")
     name: str               = Field(default=None,json_schema_extra={ 'description':'Name'})
     ip: str                 = Field(json_schema_extra={ 'description':'IP' })
-    mac: str                = Field(default=None,json_schema_extra={ 'description':'Mac'})
     type: str               = Field(default=None,json_schema_extra={ 'description':'Type'})
     secure: bool            = Field(default=False,json_schema_extra={ 'description':'Secure'})
 

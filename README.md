@@ -105,7 +105,7 @@ sudo systemctl status sensorhub
 
 Any problem Use this to view the output from the service
 ``` bash
-journalctl -u sensorhub.service
+journalctl -u sensorhub.service -e
 
 ```
 

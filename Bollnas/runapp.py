@@ -11,6 +11,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from rich import print as rprint
 
+from prometheus_client import make_asgi_app               ## Prometheus
+from prometheus_client import multiprocess
+import prometheus_client as prom
+
 import SensorHub.Blueprint as SensorhubRouter
 import Controller.Blueprint as ControllerRouter
 
@@ -45,6 +49,18 @@ app = FastAPI(
 rprint('[blue]INFO:    [/blue] Router Settings Loading : '+str(getConfig().GPIOrelays))
 if os.getenv("CONTROLLER") == 'True' :  app.include_router(ControllerRouter.router)
 if os.getenv("SENSORHUB")  == 'True' :  app.include_router(SensorhubRouter.router)
+
+
+
+# Add prometheus asgi middleware to route /metrics requests
+metrics_app = make_asgi_app()
+app.mount("/metrics", metrics_app)
+
+# Force metrics not to extract platform info
+prom.REGISTRY.unregister(prom.PROCESS_COLLECTOR)    # Suppress Memory/CPU usage
+# prom.REGISTRY.unregister(prom.PLATFORM_COLLECTOR)   # Suppress Python Version
+prom.REGISTRY.unregister(prom.GC_COLLECTOR)         # Supress Collection Reg details
+
 
 static_dir = get_project_root() / "static"
 

@@ -5,7 +5,7 @@ try:
     import RPi.GPIO as GPIO
 except:
     # In case of exception, you are executing your script outside of RPi, so import Mock.GPIO
-    rprint("[yellow]WARNING:     [/yellow]Running Mock GPIO on non RPI Device > pip install rpi.gpio")
+    rprint("[yellow]WARNING:  [/yellow]Running Mock GPIO on non RPI Device > pip install rpi.gpio")
     import Mock.GPIO as GPIO
     
 import sys, os, time, datetime, glob
@@ -157,7 +157,6 @@ def GPIOset(pinReq:gpio.PinChange) -> gpio.Pins:
     
 def GPIOinit(pin:gpio.PinChange) -> bool:
     GPIO.setmode(GPIO.BCM)
-    rprint(pin)
     try:
        GPIO.setup(pin.pin, GPIO.OUT, initial= 1)
        #rprint('[yellow]GPIO {} set to Out Relay '.format(pin.pin) )

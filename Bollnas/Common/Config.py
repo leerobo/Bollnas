@@ -67,9 +67,18 @@ class Settings(BaseSettings):
     redisHubTimer: int = 43200        #  Hub scanner valid for 12 hours (Use /Scan to force new Hub Scan when adding new Device)
 
     # Lan Scanner 
-    dns: str ="192.168.1.1"
+    dns: str ="192.168.2.1"
     sensorHub_port: str ="14121"
     netgear_password: str = ""
+    pihole_password:  str = ""
+    static_sensorhubs: list =  [""]
+
+
+    # Metric Labels 
+    metric_required:    bool = True          # True if promethueus Metrics Required
+    # Prometheus Fullname Location_deviceName_<Sensor name>
+    metric_controllerName:    str  = 'stockholm'   # controller name 
+    metric_sensorHubName:     str  = 'boiler'      # Sensorhub name 
 
     # Security covers all LAN local devices between Controller and SensorHubs
     # keys and Certs are LAN based and are used if the security flag is True

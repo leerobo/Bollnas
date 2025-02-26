@@ -5,7 +5,7 @@ from typing import Annotated, Union
 from fastapi import APIRouter, BackgroundTasks, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from rich import print as rprint                          ## Pretty Print
-import requests, datetime
+import requests, datetime, traceback
 
 from Common.Managers.hubScanner import scan_lan       ## Hub Scanners
 import Common.Managers.redis as redis                 
@@ -16,10 +16,12 @@ import Common.Schemas.scannerHubs as Hubs
 import Common.Schemas.poll as Poll
 import Common.Schemas.poll as FullPoll
 import Common.Models.enums as enums
+import Common.Managers.Metrics as promethuesMetrics
 #import Common.Schemas.sensors as Sensors
 
 import prometheus_client as prom 
 from prometheus_client import Enum, Counter, Gauge, Histogram 
+from prometheus_client.metrics import _build_full_name
 
 router = APIRouter(tags=["Controller"])
 
@@ -60,7 +62,7 @@ async def scan_hubs():                                      #  Scan Available se
           scannHub=Hubs.Hubs(**await redis.get_cache(cacheKey))
 
     except Exception as ex:
-       rprint("[yellow]CNTL:     [/yellow][red]Redis not Available - Dynamic Scanner")
+       rprint("[yellow]CNTL:     [/yellow][red]Redis not Available - Dynamic Scanner",ex)
        scannHub = scan_lan()
     
     rtn=Poll.FullPoll(timestamp=str(datetime.datetime.now()) ,polls={})
@@ -79,51 +81,12 @@ async def scan_hubs():                                      #  Scan Available se
             sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getConfig().sensorHub_port))
             sensorSchema=Poll.Poll(**sensorsRtn.json())
 
-      # set up metrics
-      # rprint("[purple]CNTL:     [/purple]",getHubs.ip,'--',type(sensorSchema),sensorSchema)
-
       rtn.polls[getHubs.name]=sensorSchema
-      #rtn[getHubs.name]=sensorSchema
 
-      # ---- Setup metrics    TODO : Needs some work
-      for pins in sensorSchema.GPIOsettings:
-         if pins.status == enums.GPIOstatus.ok:
-            if pins.description != '': SubDesc='P'+str(pins.pin)+'-'+pins.description
-            else : SubDesc='P'+str(pins.pin)
-            try:
-               regName=getHubs.name+'_GPIO_'+SubDesc
-               if regName in prom.REGISTRY._names_to_collectors:
-                  e =  prom.REGISTRY._names_to_collectors[regName]
-               else: 
-                  e = Enum(name=SubDesc,
-                     namespace=getHubs.name,
-                     subsystem='GPIO',
-                     documentation='Pin_{}'+format(pins.pin),
-                     states=['on', 'off']
-                    )
-                  if pins.value == 0 :  e.state('on')            
-                  else :                e.state('off')
-            except Exception as ex:
-               rprint("[red]CNTL:     [/red]",regName,':',ex)
+      # Set Prometheus Metrics if Required
+      if getConfig().metric_required:
+         promethuesMetrics.setPrometheusMetrics(sensorSchema) 
 
-      for W1 in sensorSchema.wire1Sensors:
-            if W1.description != '': SubDesc=W1.id+'_'+W1.description
-            else : SubDesc=W1.id
-            try:
-               regName=getHubs.name+'_WIRE1_'+SubDesc
-               if regName in prom.REGISTRY._names_to_collectors:
-                  es =  prom.REGISTRY._names_to_collectors[regName]
-               else: 
-                  es = Gauge(name=SubDesc,
-                     namespace=getHubs.name,
-                     subsystem='WIRE1',
-                     documentation=str(W1.type.name)+'-'+str(W1.measurement.value)
-                    )
-               es.set(W1.value)            
-            except Exception as ex:
-               rprint("[red]CNTL:     [/red]",regName,':',ex)
-      
-    # rprint("[purple]CNTL:     [/purple]Return >>>>> ",rtn)
     return rtn
 
 
