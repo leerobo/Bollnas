@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/home/pi/Github/Bollnas
-ExecStart=/home/pi/Github/Bollnas/venv/bin/python3 /home/pi/Github/Bollnas/venv/bin/fastapi run SensorHub/mainSensorhub.py --port 14121 --host 0.0.0.0 
+ExecStart=/home/pi/Github/Bollnas/Bollnas/run.sh sensorhub
 Restart=on-abort
 User=pi
 
