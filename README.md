@@ -29,7 +29,7 @@ Make Directory Github/Bollnas.
 change main to the branch your working on
 ``` bash
 sudo apt install git
-git config --global user.name "myGitHubUser"
+git config --global user.name "ls"
 git config --global user.email myEmail@example.com
 git config --list
 
@@ -72,11 +72,11 @@ wire1 = True
 
 # relays BCD  
 relay = True
-GPIOrelays  = [26]
-GPIOdescription = {"26":"Test_Relay"}
+GPIOrelays  = []
+GPIOdescription = {<"26":"Test_Relay"}
 
 # zigbee
-zigbee = False
+zigbee = True
 ```
 
 ### Run 

@@ -16,6 +16,8 @@ fi
 echo "Github Update"
 git pull origin sensorhub
 echo "Github API start "
-cd /home/pi/Github/Bollnas
 
-/home/pi/Github/Bollnas/venv/bin/python3 /home/pi/Github/Bollnas/venv/bin/fastapi dev /home/pi/Github/Bollnas/Bollnas/runapp.py --port 14121 --host 0.0.0.0
+#export ROOTPATH = "/home/$USER/Github/Bollnas"
+export ROOTPATH="/home/$USER/Github/Home/Bollnas"
+
+$ROOTPATH/venv/bin/python3 $ROOTPATH/venv/bin/fastapi dev $ROOTPATH/Bollnas/runapp.py --port 14121 --host 0.0.0.0

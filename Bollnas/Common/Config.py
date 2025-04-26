@@ -118,3 +118,27 @@ def getConfig() -> Settings:
     Settings.model_rebuild()
     return Settings()
 
+
+
+class SubSettings(BaseSettings):
+    """Main Settings class.
+
+      SensorHub and Controller Sub hubs 
+       
+    """
+    try:
+        env_file: str = str(get_project_root() / "SensorHub/sensorhub.env")
+        model_config = SettingsConfigDict(env_file=env_file,extra="allow",)
+        rprint("[orange3]CNTL:     [/orange3][bold]Loaded controller.env BluePrint")
+    except Exception as e:
+        rprint("[red]ERROR:     [/red][bold]Missing SensorHub .env file")
+        sys.exit(1)
+
+@lru_cache
+def getSubConfig() -> Settings:
+    """Return the current settings."""
+    print('subsettings 1')
+    SubSettings.model_rebuild()
+    print('subsettings 2')
+    return SubSettings().model_dump(exclude='env_file')
+
