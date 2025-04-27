@@ -12,7 +12,9 @@ def scan_lan() -> Hubs:
     Attached_list=[]
     rprint("[orange3]CNTL:     [/orange3][yellow]Scanning ..... [/yellow]" ) 
     # Fixed static LAN addresses
+    rprint("[orange3]CNTL:  static {}".format(len(getConfig().static_sensorhubs)) )
     if len(getConfig().static_sensorhubs) > 0 :
+      rprint("[orange3]CNTL:     [/orange3][yellow]Static IP List ..... [/yellow]" ) 
       devices=namedtuple('Device',['ip'])
       for i in getConfig().static_sensorhubs:
         try :

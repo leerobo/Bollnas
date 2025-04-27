@@ -13,6 +13,9 @@ else
  export SENSORHUB=True
 fi
 
+
+# Keeps software up to date , but if it falls out of line just run the git pull command manually
+# remove any files that are clashiinng (due to merge) and run again 
 echo "Github Update"
 git pull origin main
 echo "Github API starting"
