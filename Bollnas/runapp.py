@@ -20,7 +20,7 @@ import Controller.Blueprint as ControllerRouter
 
 import Common.Managers.pollSensors as pollSensors
 
-from   Common.Config import getConfig
+from   Common.Config import getConfig, has_config
 import Common.Schemas.Sensors.wire1 as wire1
 import Common.Schemas.Sensors.gpio as gpio
 import Common.Models.enums as enums
