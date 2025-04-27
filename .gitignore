@@ -15,5 +15,6 @@ __pycache__/
 *.bak
 
 # Dev drops
-*.env
+controller.env
+sensorhub.env
 prometheus_multiproc_dir/

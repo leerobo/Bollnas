@@ -37,6 +37,15 @@ git clone https://github.com/leerobo/Bollnas.git
 git pull origin main
 ```
 
+### Redis   (Controller Only)
+docker run -d \
+  --name redis \
+  -p 6379:6379 \
+  -v ~/redis_data:/data \
+  --restart always \
+  redis:latest 
+  
+
 #### Venv
 Create a Venv area on the RPI and download required packages
 ``` bash
