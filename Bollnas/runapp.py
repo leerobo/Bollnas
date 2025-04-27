@@ -5,11 +5,12 @@ from collections.abc import AsyncGenerator,AsyncIterator
 from contextlib import asynccontextmanager
 #from typing import Any,Union
 
-from fastapi import FastAPI
+from fastapi import FastAPI,status,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 # from fastapi.staticfiles import StaticFiles
 
 from rich import print as rprint
+from typing import Union
 
 from prometheus_client import make_asgi_app               ## Prometheus
 from prometheus_client import multiprocess
@@ -50,6 +51,13 @@ rprint('[blue]INFO:    [/blue] Router Settings Loading : '+str(getSensorHubrConf
 if os.getenv("CONTROLLER") == 'True' :  app.include_router(ControllerRouter.router)
 if os.getenv("SENSORHUB")  == 'True' :  app.include_router(SensorhubRouter.router)
 
+# Generic Route across both SensorHub and Controller , not advisable for Production run
+
+@app.get("/settings/(code)",status_code=status.HTTP_200_OK, name="Show Installation Settings" ,tags=["Generic"])
+async def AdminSettings(code:str ):                                   
+    if code != 'Winter2BerryMoon.'  :  raise HTTPException(status_code=401, detail="Invalid Code")
+    return  getConfig(),getSensorHubrConfig(),getControllerConfig()
+
 # Add prometheus asgi middleware to route /metrics requests
 metrics_app = make_asgi_app()
 app.mount("/metrics", metrics_app)
@@ -58,7 +66,6 @@ app.mount("/metrics", metrics_app)
 prom.REGISTRY.unregister(prom.PROCESS_COLLECTOR)    # Suppress Memory/CPU usage
 # prom.REGISTRY.unregister(prom.PLATFORM_COLLECTOR)   # Suppress Python Version
 prom.REGISTRY.unregister(prom.GC_COLLECTOR)         # Supress Collection Reg details
-
 
 static_dir = get_project_root() / "static"
 

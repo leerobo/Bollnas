@@ -25,7 +25,7 @@ from Common.Managers import decorators
 #from schemas.request.user import UserLoginRequest, UserRegisterRequest
 #from schemas.response.auth import TokenRefreshResponse, TokenResponse
 
-router = APIRouter(tags=["sensorHub"])
+router = APIRouter(tags=["SensorHub"])
 
 @router.get("/ping",status_code=status.HTTP_200_OK,
     name="Ping SensonHub Gateway",
