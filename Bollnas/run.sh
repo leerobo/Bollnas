@@ -13,13 +13,15 @@ else
  export SENSORHUB=True
 fi
 
-
 # Keeps software up to date , but if it falls out of line just run the git pull command manually
 # remove any files that are clashiinng (due to merge) and run again 
-echo "Github Update"
-git pull origin main
-echo "Github API starting"
+if [ "$1" != "noupdate" ] && [ "$2" != "noupdate" ]; then
+    echo "Github Update"
+    git pull origin main
+    echo "Github API starting"
+fi    
 
-export ROOTPATH="/home/$USER/Bollnas"
+export ROOTPATH="/home/$USER/Github/Home/Bollnas"
 
-$ROOTPATH/venv/bin/python3 $ROOTPATH/venv/bin/fastapi dev $ROOTPATH/Bollnas/runapp.py --port 14121 --host 0.0.0.0
+# $ROOTPATH/venv/bin/python3 $ROOTPATH/venv/bin/fastapi dev $ROOTPATH/Bollnas/runapp.py --port 14121 --host 0.0.0.0
+python3 $ROOTPATH/venv/bin/fastapi dev $ROOTPATH/Bollnas/runapp.py --port 14121 --host 0.0.0.0

@@ -20,7 +20,7 @@ import Controller.Blueprint as ControllerRouter
 
 import Common.Managers.pollSensors as pollSensors
 
-from   Common.Config import getConfig
+from   Common.Config import getConfig, getControllerConfig, getSensorHubrConfig
 import Common.Schemas.Sensors.wire1 as wire1
 import Common.Schemas.Sensors.gpio as gpio
 import Common.Models.enums as enums
@@ -29,7 +29,7 @@ from   Common.helpers import get_api_version, get_project_root, get_api_details
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     rprint('[blue]INFO:    [/blue] Initiated Routines Running')
-    for relay in getConfig().GPIOrelays:
+    for relay in getSensorHubrConfig().GPIOrelays:
         pollSensors.GPIOinit( gpio.PinChange( pin=relay, task=enums.GPIOtask.off ) )
     rprint('[blue]INFO:    [/blue] Initiated Routines Complete')        
     yield
@@ -46,11 +46,9 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-rprint('[blue]INFO:    [/blue] Router Settings Loading : '+str(getConfig().GPIOrelays))
+rprint('[blue]INFO:    [/blue] Router Settings Loading : '+str(getSensorHubrConfig().GPIOrelays))
 if os.getenv("CONTROLLER") == 'True' :  app.include_router(ControllerRouter.router)
 if os.getenv("SENSORHUB")  == 'True' :  app.include_router(SensorhubRouter.router)
-
-
 
 # Add prometheus asgi middleware to route /metrics requests
 metrics_app = make_asgi_app()

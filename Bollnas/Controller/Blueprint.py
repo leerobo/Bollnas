@@ -9,7 +9,7 @@ import requests, datetime, traceback
 
 from Common.Managers.hubScanner import scan_lan       ## Hub Scanners
 import Common.Managers.redis as redis                 
-from Common.Config import getConfig
+from Common.Config import getConfig,getControllerConfig
 
 #from Common.Schemas.cached import Controller              ## Schemas
 import Common.Schemas.scannerHubs as Hubs
@@ -69,7 +69,7 @@ async def scan_hubs():                                      #  Scan Available se
     for getHubs in scannHub.SensorHubs:
       try:
           if await redis.exists(getHubs.name) == 0:                #  Scan for Hubs sensor details if Cache has expired
-            sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getConfig().sensorHub_port))
+            sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getControllerConfig().sensorHub_port))
             sensorSchema=Poll.Poll(**sensorsRtn.json())
             await redis.set_cache(data=sensorSchema,keys=getHubs.name)
           else:  
@@ -78,7 +78,7 @@ async def scan_hubs():                                      #  Scan Available se
             
       except Exception as ex:
             rprint("[yellow]CNTL:     [/yellow][red]Dynamic Polling[/red]",ex)
-            sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getConfig().sensorHub_port))
+            sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getControllerConfig().sensorHub_port))
             sensorSchema=Poll.Poll(**sensorsRtn.json())
 
       rtn.polls[getHubs.name]=sensorSchema

@@ -3,22 +3,22 @@ from __future__ import annotations
 from rich import print as rprint
 from Common.Schemas.scannerHubs import Hubs,Hub
 from pynetgear import Netgear
-from Common.Config import getConfig
+from Common.Config import getConfig,getControllerConfig,getSensorHubrConfig
 
 import requests
 from collections import namedtuple
 
 def scan_lan() -> Hubs:
     Attached_list=[]
-    rprint("[orange3]CNTL:     [/orange3][yellow]Scanning ..... [/yellow] >{}<".format( getConfig().netgear_password ) ) 
+    rprint("[orange3]CNTL:     [/orange3][yellow]Scanning ..... [/yellow]")  
     # Fixed static LAN addresses
-    rprint("[orange3]CNTL:  static {} : {} : >{}<".format(len(getConfig().static_sensorhubs),getConfig().static_sensorhubs,getConfig().static_sensorhubs[0]) ) 
-    if len(getConfig().static_sensorhubs) and getConfig().static_sensorhubs[0] != "" :
+ 
+    if len(getControllerConfig().static_sensorhubs) and getControllerConfig().static_sensorhubs[0] != "" :
       rprint("[orange3]CNTL:     [/orange3][yellow]Static IP List ..... [/yellow]" ) 
       devices=namedtuple('Device',['ip'])
-      for i in getConfig().static_sensorhubs:
+      for i in getControllerConfig().static_sensorhubs:
         try :
-          x = requests.get('http://{}:{}/ping'.format(i,getConfig().sensorHub_port),timeout=1)
+          x = requests.get('http://{}:{}/ping'.format(i,getControllerConfig().sensorHub_port),timeout=1)
           Attached_list.append(devices(i))
           rprint("[yellow]INFO:     [/yellow][yellow]Static Address Attached {}[/yellow]".format(i) )      
         except Exception as ex :
@@ -26,28 +26,29 @@ def scan_lan() -> Hubs:
           pass  
 
     # Get attached device list directly from the piHole Router
-    elif getConfig().pihole_password != "":
-      Attached_list={}
+    elif getControllerConfig().pihole_password != "":
+      Attached_list=[]
       rprint("[orange3]CNTL:     [/orange3][yellow]Scanning Pi-Hole Router[/yellow]" )      
       rprint("[red]ERROR:     [/red]Not Yet Supported" )      
 
     # Get attached device list directly from the Netgear Router
-    elif getConfig().netgear_password != "":
+    elif getControllerConfig().netgear_password != "":
       Attached_list=[]
-      netgear = Netgear(password=getConfig().netgear_password)
-      rprint("[orange3]CNTL:     [/orange3][yellow]Scanning Netgear Router[/yellow]" )      
+      netgear = Netgear(password=getControllerConfig().netgear_password,host=getControllerConfig().dns )
+
+      rprint("[orange3]CNTL:     [/orange3][yellow]Scanning Netgear Router[/yellow] ",getControllerConfig().netgear_password, " @ ",getControllerConfig().dns  )      
       if netgear.login_try_port() :    
         for i in netgear.get_attached_devices_2():                        # namedTuple Device List
-           if i.name != None:
-             if i.type == 'wired' and Attached_list.type == 'wireless' :  Attached_list=i
+           rprint(i)
+           if i.name != None:     Attached_list.append(i)
       else: rprint("[red]CNTL:     [/red]NetGear Error")
 
     else:
       # Get attached device list by one by one scanning the LAN (Dead slow)
-      rprint("[orange3]CNTL:     [/orange3][yellow]LAN scanner[/yellow]", getConfig().dns )
+      rprint("[orange3]CNTL:     [/orange3][yellow]LAN scanner[/yellow]", getControllerConfig().dns )
       for i in range(2,250):
         try :
-          x = requests.get('http://192.168.2.{}:{}/ping'.format(i,getConfig().sensorHub_port),timeout=1)
+          x = requests.get('http://192.168.2.{}:{}/ping'.format(i,getControllerConfig().sensorHub_port),timeout=1)
           Attached_list[i]={'ip':x}
         except :
           pass  
@@ -56,14 +57,14 @@ def scan_lan() -> Hubs:
     SensorHubsFound=[]
     for i in Attached_list:
       try:
-        x = requests.get('http://{}:{}/ping'.format(i.ip,getConfig().sensorHub_port ),timeout=1) 
+        x = requests.get('http://{}:{}/ping'.format(i.ip,getControllerConfig().sensorHub_port ),timeout=1) 
         if x.status_code == 200 : 
           hubDetails=Hub(**i._asdict())
           hubDetails.secure=x.json()['security']
           hubDetails.type = x.json()['devicetype']
           hubDetails.name = x.json()['name']
           SensorHubsFound.append( hubDetails )
-          rprint("[orange3]CNTL:    [/orange3]",i.ip,"[yellow] Hub Attachedon Port [/yellow] ",getConfig().sensorHub_port )
+          rprint("[orange3]CNTL:    [/orange3]",i.ip,"[yellow] Hub Attachedon Port [/yellow] ",getControllerConfig().sensorHub_port )
         else:   
           rprint("[orange3]CNTL:    [/orange3]",i.ip,"[yellow] Port Found, Bad Response[/yellow] (",x.status_code,")")
 
