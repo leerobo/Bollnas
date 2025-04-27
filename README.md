@@ -90,11 +90,11 @@ cd Bollnas
 ./run.sh                   # As both a controller and sensorhub
 ```
 
-#### systemd
+#### systemd sensorhub
 Run These to create the service 
 ``` bash
-sudo cp /home/pi/Github/Bollnas/Scripts/sensorhub.service /lib/systemd/system/
-sudo cp /home/pi/Github/Bollnas/Scripts/sensorhub.service /etc/systemd/system/
+sudo cp /home/pi/Bollnas/Scripts/sensorhub.service /lib/systemd/system/
+sudo cp /home/pi/Bollnas/Scripts/sensorhub.service /etc/systemd/system/
 sudo chmod 644 /lib/systemd/system/sensorhub.service
 
 sudo systemctl daemon-reload
@@ -106,6 +106,25 @@ sudo systemctl status sensorhub
 Any problem Use this to view the output from the service
 ``` bash
 journalctl -u sensorhub.service -e
+
+```
+
+#### systemd controller
+Run These to create the service 
+``` bash
+sudo cp /home/pi/Bollnas/Scripts/controller.service /lib/systemd/system/
+sudo cp /home/pi/Bollnas/Scripts/controller.service /etc/systemd/system/
+sudo chmod 644 /lib/systemd/system/controller.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable controller
+sudo systemctl start controller
+sudo systemctl status controller
+``` 
+
+Any problem Use this to view the output from the service
+``` bash
+journalctl -u controller.service -e
 
 ```
 

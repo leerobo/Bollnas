@@ -1,11 +1,11 @@
 [Unit]
-Description=SensorHub
+Description=Controller
 After=network.target
 
 [Service]
 Type=simple
 WorkingDirectory=/home/pi/Bollnas
-ExecStart=/home/pi/Bollnas/Bollnas/run.sh sensorhub
+ExecStart=/home/pi/Bollnas/Bollnas/run.sh controller
 Restart=on-abort
 User=pi
 
