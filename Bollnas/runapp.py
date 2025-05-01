@@ -56,7 +56,10 @@ if os.getenv("SENSORHUB")  == 'True' :  app.include_router(SensorhubRouter.route
 @app.get("/settings/(code)",status_code=status.HTTP_200_OK, name="Show Installation Settings" ,tags=["Generic"])
 async def AdminSettings(code:str ):                                   
     if code != 'Winter2BerryMoon.'  :  raise HTTPException(status_code=401, detail="Invalid Code")
-    return  getConfig()
+    rtn = [getConfig()]
+    if os.getenv("SENSORHUB")  == 'True' :  rtn.append(getSensorHubConfig())
+    if os.getenv("CONTROLLER") == 'True' :  rtn.append(getControllerConfig())
+    return  rtn
 
 # Add prometheus asgi middleware to route /metrics requests
 metrics_app = make_asgi_app()
