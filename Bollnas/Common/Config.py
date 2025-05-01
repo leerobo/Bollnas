@@ -115,7 +115,7 @@ def getControllerConfig() -> ControllerSettings:
     return ControllerSettings()
 
 #@lru_cache
-def getSensorHubrConfig() -> SensorHubSettings:
+def getSensorHubConfig() -> SensorHubSettings:
     """Return the SensorHub settings."""
     SensorHubSettings.model_rebuild()
     return SensorHubSettings()

@@ -21,7 +21,7 @@ import Controller.Blueprint as ControllerRouter
 
 import Common.Managers.pollSensors as pollSensors
 
-from   Common.Config import getConfig, getControllerConfig, getSensorHubrConfig
+from   Common.Config import getConfig, getControllerConfig, getSensorHubConfig
 import Common.Schemas.Sensors.wire1 as wire1
 import Common.Schemas.Sensors.gpio as gpio
 import Common.Models.enums as enums
@@ -56,7 +56,7 @@ if os.getenv("SENSORHUB")  == 'True' :  app.include_router(SensorhubRouter.route
 @app.get("/settings/(code)",status_code=status.HTTP_200_OK, name="Show Installation Settings" ,tags=["Generic"])
 async def AdminSettings(code:str ):                                   
     if code != 'Winter2BerryMoon.'  :  raise HTTPException(status_code=401, detail="Invalid Code")
-    return  getConfig(),getSensorHubrConfig(),getControllerConfig()
+    return  getConfig()
 
 # Add prometheus asgi middleware to route /metrics requests
 metrics_app = make_asgi_app()

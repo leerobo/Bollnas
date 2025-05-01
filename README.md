@@ -44,7 +44,6 @@ docker run -d \
   -v ~/redis_data:/data \
   --restart always \
   redis:latest 
-  
 
 #### Venv
 Create a Venv area on the RPI and download required packages
