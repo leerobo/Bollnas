@@ -30,7 +30,7 @@ from   Common.helpers import get_api_version, get_project_root, get_api_details
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     rprint('[blue]INFO:    [/blue] Initiated Routines Running')
-    for relay in getSensorHubrConfig().GPIOrelays:
+    for relay in getSensorHubConfig().GPIOrelays:
         pollSensors.GPIOinit( gpio.PinChange( pin=relay, task=enums.GPIOtask.off ) )
     rprint('[blue]INFO:    [/blue] Initiated Routines Complete')        
     yield
@@ -47,7 +47,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-rprint('[blue]INFO:    [/blue] Router Settings Loading : '+str(getSensorHubrConfig().GPIOrelays))
+rprint('[blue]INFO:    [/blue] Router Settings Loading : '+str(getSensorHubConfig().GPIOrelays))
 if os.getenv("CONTROLLER") == 'True' :  app.include_router(ControllerRouter.router)
 if os.getenv("SENSORHUB")  == 'True' :  app.include_router(SensorhubRouter.router)
 

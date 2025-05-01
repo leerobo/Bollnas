@@ -15,7 +15,7 @@ import Common.Schemas.error as error
 import Common.Schemas.HTTPheaders as HTTPheaders
 
 from rich import print as rprint
-from  Common.Config import getConfig,getSensorHubrConfig
+from  Common.Config import getConfig,getSensorHubConfig
 import Common.Managers.pollSensors as pollSensors
 import Common.Models.enums as enums
 
@@ -37,11 +37,11 @@ def ping():
               description=getConfig().api_description, 
               location=getConfig().api_location, 
               devicetype=enums.DeviceType.sensorhub,
-              security=getSensorHubrConfig().security,
-              securityKey=getSensorHubrConfig().securityKey,
-              wire1=getSensorHubrConfig().wire1,
-              relays=getSensorHubrConfig().relays,
-              zigbee=getSensorHubrConfig().zigbee
+              security=getSensorHubConfig().security,
+              securityKey=getSensorHubConfig().securityKey,
+              wire1=getSensorHubConfig().wire1,
+              relays=getSensorHubConfig().relays,
+              zigbee=getSensorHubConfig().zigbee
             )
 
 
@@ -63,17 +63,17 @@ async def poll( headers: Annotated[HTTPheaders.Headers, Header()] ):
 )
 @decorators.token_required
 def relay(task:gpio.PinChange):
-    if len(getSensorHubrConfig().GPIOrelays) == 0 :
+    if len(getSensorHubConfig().GPIOrelays) == 0 :
        return error.response(message='No Relay Pin Defined for this Device')
         
     if task.pin == 0:  
        rtn=[]
-       for relay in getSensorHubrConfig().GPIOrelays:
+       for relay in getSensorHubConfig().GPIOrelays:
            task.pin = relay
            rtn.append(pollSensors.GPIOset( task ) )
        return rtn
 
-    if task.pin not in getSensorHubrConfig().GPIOrelays:
+    if task.pin not in getSensorHubConfig().GPIOrelays:
        return error.response(message='Pin not Defined as Relay - see GPIOrelays in settings')
 
     return  pollSensors.GPIOset( task )
@@ -96,8 +96,8 @@ async def get_settings(headers: Annotated[HTTPheaders.Headers, Header() ]):
     #        print(key,value)
     #        env_vars[key]= value.replace('"','')
     # rprint(env_vars)
-    print('subConfig :',getSensorHubrConfig() )
-    return getSensorHubrConfig() 
+    print('subConfig :',getSensorHubConfig() )
+    return getSensorHubConfig() 
 
  
 
