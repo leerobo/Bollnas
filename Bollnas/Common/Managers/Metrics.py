@@ -2,7 +2,9 @@
 from rich import print as rprint                          ## Pretty Print
 import traceback
 
-from Common.Config import getConfig
+#from Bollnas.Common.zzzzzConfig import getConfig
+from Common.ConfigLoad import getJSONconfig
+
 import Common.Models.enums as enums
 
 import prometheus_client as prom 

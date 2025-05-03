@@ -23,6 +23,15 @@ class ControllerSettings(BaseSettings,extra="allow"):
     pihole_password:  str = ""
     static_sensorhubs: list =  []
 
+class ControllerSettings(BaseSettings,extra="allow"):
+    model_config = SettingsConfigDict(env_file="/home/lero/Github/Home/Bollnas/Bollnas/Controller/controller.env")
+    dns: str ="192.168.2.1"
+    sensorHub_port: str ="14121"
+    netgear_password: str = ""
+    pihole_password:  str = ""
+    static_sensorhubs: list =  []
+
+
 class SensorHubSettings(BaseSettings,extra="allow" ):
     model_config = SettingsConfigDict(env_file="/home/lero/Github/Home/Bollnas/Bollnas/SensorHub/sensorhub.env")
 
@@ -103,7 +112,14 @@ class DefaultSettings(BaseSettings):
 
 
 #@lru_cache
+def getJSONconfig() -> JSONconfig:
+    DefaultSettings.model_rebuild()
+    return DefaultSettings()
+
+
+#@lru_cache
 def getConfig() -> DefaultSettings:
+    print('---- load old config style ---------')
     """ Return A Config Field """
     DefaultSettings.model_rebuild()
     return DefaultSettings()

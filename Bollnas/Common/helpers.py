@@ -65,7 +65,6 @@ def get_api_details() -> tuple[str, str, list[dict[str, str]]]:
 @dataclass
 class MetadataBase:
     """This is the base Metadata class used for customization."""
-
     title: str
     name: str
     description: str

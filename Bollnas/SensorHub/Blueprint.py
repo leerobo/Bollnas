@@ -15,7 +15,8 @@ import Common.Schemas.error as error
 import Common.Schemas.HTTPheaders as HTTPheaders
 
 from rich import print as rprint
-from  Common.Config import getConfig,getSensorHubConfig
+#from  Bollnas.Common.zzzzzConfig import getConfig,getSensorHubConfig
+from Common.ConfigLoad import getJSONconfig
 import Common.Managers.pollSensors as pollSensors
 import Common.Models.enums as enums
 
@@ -33,18 +34,26 @@ router = APIRouter(tags=["SensorHub"])
     response_model=Ping.PingResponse
 )
 def ping():
-    return Ping.PingResponse(name=getConfig().api_title, 
-              description=getConfig().api_description, 
-              location=getConfig().api_location, 
+    rprint(getJSONconfig())
+    rtn = Ping.PingResponse(name=getJSONconfig().Title, 
+              description=getJSONconfig().Description, 
+              location=getJSONconfig().Installation.Location, 
               devicetype=enums.DeviceType.sensorhub,
-              security=getSensorHubConfig().security,
-              securityKey=getSensorHubConfig().securityKey,
-              wire1=getSensorHubConfig().wire1,
-              relays=getSensorHubConfig().relays,
-              zigbee=getSensorHubConfig().zigbee
+              security=getJSONconfig().Security.comms,
+              wire1=getJSONconfig().SensorHubs.Wire1,
+              zigbee=getJSONconfig().SensorHubs.Zigbee
             )
+    if getJSONconfig().Security.Comms == True :
+        if ( getJSONconfig().Security.apikey != "" ) :
+            rtn.securityKey = getJSONconfig().Security.apikey
+        elif ( getJSONconfig().Security.pemCert != "" ) :
+            rtn.securityKey = getJSONconfig().Security.pemCert
 
+    if getJSONconfig().SensorHubs.Relays != [] :       
+        rtn.relays=True
 
+    return rtn
+             
 @router.get("/poll",status_code=status.HTTP_200_OK,
     name="Poll Sensor Status",
     description='Force a Poll on all Attached Sensors & Switches and cache results',
@@ -78,7 +87,6 @@ def relay(task:gpio.PinChange):
 
     return  pollSensors.GPIOset( task )
 
-
 @router.get("/settings",status_code=status.HTTP_200_OK,
     name="Sensorhub Settings",
     description='Show sensorhub control settings',
@@ -87,17 +95,4 @@ def relay(task:gpio.PinChange):
 @decorators.token_required
 async def get_settings(headers: Annotated[HTTPheaders.Headers, Header() ]):
     """ get sensorhub settings """
-    env_vars = {}
-    # with open(str(getConfig().project_root / "Controller/controller.env")) as f:
-    #      for line in f:
-    #        if line.startswith('#') or not line.strip():       
-    #           continue
-    #        key, value = line.strip().split('=', 1)
-    #        print(key,value)
-    #        env_vars[key]= value.replace('"','')
-    # rprint(env_vars)
-    print('subConfig :',getSensorHubConfig() )
-    return getSensorHubConfig() 
-
- 
-
+    return getJSONconfig().model_dump(exclude_defaults=True,exclude_none=True)

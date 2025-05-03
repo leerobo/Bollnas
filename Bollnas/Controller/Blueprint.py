@@ -9,7 +9,8 @@ import requests, datetime, traceback
 
 from Common.Managers.hubScanner import scan_lan       ## Hub Scanners
 import Common.Managers.redis as redis                 
-from Common.Config import getConfig,getControllerConfig
+#from Bollnas.Common.zzzzzConfig import getConfig,getControllerConfig
+from Common.ConfigLoad import getJSONconfig
 
 #from Common.Schemas.cached import Controller              ## Schemas
 import Common.Schemas.scannerHubs as Hubs

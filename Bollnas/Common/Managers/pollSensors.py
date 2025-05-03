@@ -15,7 +15,8 @@ import sys, os, time, datetime, glob
 import Common.Schemas.Sensors.gpio as gpio
 import Common.Schemas.Sensors.wire1 as wire1
 import Common.Models.enums as enums
-from Common.Config import getConfig  
+#from Bollnas.Common.zzzzzConfig import getConfig  
+from Common.ConfigLoad import getJSONconfig
 
 async def poll(): 
     rtn={}
@@ -34,7 +35,9 @@ def pollWire1() -> list[wire1.Status]:
     """
     wire1Sensors=[]
     SIDs=[]
-    devicelist = glob.glob(getConfig().wire1dir+'28*')   #  DS18 Sensors
+    if not getJSONconfig().SensorHubs.Wire1 : return wire1Sensors
+
+    devicelist = glob.glob(getJSONconfig().SensorHubs.Wire1dir+'28*')   #  DS18 Sensors
 
     if devicelist!='':
         for device in devicelist:
@@ -52,9 +55,10 @@ def pollWire1() -> list[wire1.Status]:
                                  )  )
 
     return wire1Sensors
+
 def readWire1(SID) -> float:
     """ Read Wire 1 sensors from Directory based on Sensor ID(File name) """
-    devicefile=getConfig().wire1dir+SID+'/w1_slave'
+    devicefile=getJSONconfig().SensorHubs.Wire1dir+SID+'/w1_slave'
     try:
         fileobj = open(devicefile,'r')
         lines = fileobj.readlines()
@@ -80,15 +84,13 @@ def pollGPIO()  -> list[gpio.Pins]:
     try:
         GPIO.setwarnings(False) 
         GPIO.setmode(GPIO.BCM)
-        for relay in getConfig().GPIOrelays:
-            pinDetails=GPIOread( gpio.PinChange(pin=relay,task=enums.GPIOtask.read) )
-            rprint(pinDetails) 
-
+        for relay in getJSONconfig().SensorHubs.Relays:
+            pinDetails=GPIOread( gpio.PinChange(pin=relay['pin'],task=enums.GPIOtask.read) )
             if pinDetails.value == None:
                pinDetails.value = -88
                pinDetails.reason = 'Unknown State Found'  
 
-            rtn.append( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,
+            rtn.append( gpio.Pins(pin=relay['pin'],pintype=enums.GPIOdeviceAttached.relay,
                                   direction=enums.GPIOdirection.out,
                                   status=pinDetails.status,
                                   value=pinDetails.value,
@@ -97,16 +99,15 @@ def pollGPIO()  -> list[gpio.Pins]:
        
     except Exception as ex:
         rprint('[red]Sensor {} Read Error : {}'.format(relay,ex) )
-        rtn.append( GPIOread( gpio.Pins(pin=relay,pintype=enums.GPIOdeviceAttached.relay,
+        rtn.append( GPIOread( gpio.Pins(pin=relay['pin'],pintype=enums.GPIOdeviceAttached.relay.value,
                                         direction=enums.GPIOdirection.out,
                                         status=enums.GPIOstatus.error,value=-86,
                                         description=getDescriptions(relay)
-                                       )  )  )
+        )  )  )
     return rtn
 def getDescriptions(pinW1) -> str:
-    print('Get description >>>',pinW1,getConfig().GPIOdescription)
-    if str(pinW1) in getConfig().GPIOdescription:  return getConfig().GPIOdescription[str(pinW1)]
-    if str(pinW1) in getConfig().wire1description: return getConfig().wire1description[str(pinW1)]
+    for relay in getJSONconfig().SensorHubs.Relays:
+        if str(pinW1) in relay['pin'] : return relay['Description']
     return ""
 
 # Control GPIO Pins 

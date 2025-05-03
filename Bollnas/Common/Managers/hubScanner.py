@@ -3,7 +3,8 @@ from __future__ import annotations
 from rich import print as rprint
 from Common.Schemas.scannerHubs import Hubs,Hub
 from pynetgear import Netgear
-from Common.Config import getConfig,getControllerConfig,getSensorHubConfig
+#from Bollnas.Common.zzzzzConfig import getConfig,getControllerConfig,getSensorHubConfig
+from Common.helpers import get_project_root
 
 import requests
 from collections import namedtuple
