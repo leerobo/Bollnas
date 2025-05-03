@@ -18,8 +18,8 @@ def setPrometheusMetrics(Schema:list):
          if pins.status == enums.GPIOstatus.ok:
             try:
                fullName=_build_full_name(metric_type='enum',name='P'+str(pins.pin),
-                                   namespace=getConfig().metric_controllerName,
-                                   subsystem=getConfig().metric_sensorHubName,
+                                   namespace=getJSONconfig().Installation.Location,
+                                   subsystem=getJSONconfig().Installation.Room+'-'+getJSONconfig().Installation.Reason,
                                    unit='')
  
                if fullName in prom.REGISTRY._names_to_collectors:
@@ -28,8 +28,8 @@ def setPrometheusMetrics(Schema:list):
                else: 
                   rprint("[orange3]CNTL:     [/orange3][yellow]New Metrics[/yellow]",fullName)
                   e = Enum(
-                     namespace=getConfig().metric_controllerName ,
-                     subsystem=getConfig().metric_sensorHubName ,
+                     namespace=getJSONconfig().Installation.Location ,
+                     subsystem=getJSONconfig().Installation.Room+'_'+getJSONconfig().Installation.Reason ,
                      name='P'+str(pins.pin),
                      documentation='BCD Pin-{}'.format(pins.pin),
                      states=['on', 'off', 'unknown']
@@ -42,12 +42,10 @@ def setPrometheusMetrics(Schema:list):
                traceback.print_exc()
                return
 
-
-
       for W1 in Schema.wire1Sensors:
             fullName=_build_full_name(metric_type='enum',name=W1.id[3:],
-                                   namespace=getConfig().metric_controllerName,
-                                   subsystem=getConfig().metric_sensorHubName,
+                                   namespace=getJSONconfig().Installation.Location ,
+                                   subsystem=getJSONconfig().Installation.Room+'_'+getJSONconfig().Installation.Reason ,
                                    unit='')            
             try:
                if fullName in prom.REGISTRY._names_to_collectors:
@@ -56,8 +54,8 @@ def setPrometheusMetrics(Schema:list):
                else: 
                   rprint("[orange3]CNTL:     [/orange3][yellow]New Metrics[/yellow]",fullName)
                   e = Gauge(
-                     namespace=getConfig().metric_controllerName ,
-                     subsystem=getConfig().metric_sensorHubName ,
+                     namespace=getJSONconfig().Installation.Location ,
+                     subsystem=getJSONconfig().Installation.Room+'_'+getJSONconfig().Installation.Reason  ,
                      name=W1.id[3:],
                      documentation=str(W1.type.name)+'-'+str(W1.measurement.value)
                   )

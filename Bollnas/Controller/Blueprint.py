@@ -40,7 +40,7 @@ async def scan():
     """
     cacheKey='HubCache'
     Hubs=scan_lan()
-    await redis.set_cache(data=Hubs,keys=cacheKey,dur=getConfig().redisHubTimer)
+    await redis.set_cache(data=Hubs,keys=cacheKey,dur=getJSONconfig().Cache.HubTimer)
     rprint('[yellow]SCAN     [/yellow] SensorHub Scanner Refreshed')
     return Hubs
     # TODO: store hubs to a generic thread safe area 
@@ -58,7 +58,7 @@ async def scan_hubs():                                      #  Scan Available se
     try:
        if await redis.exists(cacheKey) == 0:                #  Scan for Hubs if Cache has expired
           scannHub = scan_lan()
-          await redis.set_cache(data=scannHub,keys=cacheKey,dur=getConfig().redisHubTimer) 
+          await redis.set_cache(data=scannHub,keys=cacheKey,dur=getJSONconfig().Cache.HubTimer) 
        else:   
           scannHub=Hubs.Hubs(**await redis.get_cache(cacheKey))
 
@@ -70,7 +70,7 @@ async def scan_hubs():                                      #  Scan Available se
     for getHubs in scannHub.SensorHubs:
       try:
           if await redis.exists(getHubs.name) == 0:                #  Scan for Hubs sensor details if Cache has expired
-            sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getControllerConfig().sensorHub_port))
+            sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getJSONconfig().ControllerHub.Port_Scanner))
             sensorSchema=Poll.Poll(**sensorsRtn.json())
             await redis.set_cache(data=sensorSchema,keys=getHubs.name)
           else:  
@@ -79,13 +79,13 @@ async def scan_hubs():                                      #  Scan Available se
             
       except Exception as ex:
             rprint("[yellow]CNTL:     [/yellow][red]Dynamic Polling[/red]",ex)
-            sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getControllerConfig().sensorHub_port))
+            sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getJSONconfig().ControllerHub.Port_Scanner))
             sensorSchema=Poll.Poll(**sensorsRtn.json())
 
       rtn.polls[getHubs.name]=sensorSchema
 
       # Set Prometheus Metrics if Required
-      if getConfig().metric_required:
+      if getJSONconfig().metric_required:
          promethuesMetrics.setPrometheusMetrics(sensorSchema) 
 
     return rtn

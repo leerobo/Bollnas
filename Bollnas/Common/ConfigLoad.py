@@ -42,7 +42,7 @@ class TheSecurity(BaseSettings,extra="allow"):
     pemCert : str = ""
 
 class TheCache(BaseSettings,extra="allow"):
-    timer : int = 30 
+    Timer : int = 30 
     HubTimer : int = 43200
     host : str = "localhost"
     port : int = 6379
@@ -66,7 +66,6 @@ class Settings(BaseSettings,extra="allow"):
 
 #@lru_cache
 def getJSONconfig() -> Settings:
-    print(get_project_root())
     with open(get_project_root() / 'Common/Config.json', 'r') as file:
         # data = json.loads(re.sub("//.*","",file,flags=re.MULTILINE))
         data = json.load(file)

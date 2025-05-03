@@ -10,7 +10,7 @@ r = redis.Redis(host='localhost', port=6379, db=0)
 
 async def set_cache(data: object, keys='bollnas',dur=0):
     try:
-        if dur == 0 : dur = getConfig().redisTimer
+        if dur == 0 : dur = getJSONconfig().Cache.Timer
         rprint("[orange3]CNTL:     [/orange3][yellow]Cached",keys,'[yellow]for',dur,'[yellow]Seconds')
         r.set(keys, data.model_dump_json(),ex=dur)
     except Exception as e:

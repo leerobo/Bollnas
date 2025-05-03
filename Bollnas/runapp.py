@@ -65,7 +65,7 @@ app.mount("/metrics", metrics_app)
 
 # Force metrics not to extract platform info
 prom.REGISTRY.unregister(prom.PROCESS_COLLECTOR)    # Suppress Memory/CPU usage
-prom.REGISTRY.unregister(prom.PLATFORM_COLLECTOR)   # Suppress Python Version
+#prom.REGISTRY.unregister(prom.PLATFORM_COLLECTOR)   # Suppress Python Version
 prom.REGISTRY.unregister(prom.GC_COLLECTOR)         # Supress Collection Reg details
 
 static_dir = get_project_root() / "static"

@@ -155,8 +155,18 @@ if your on the same device then use <ip>:14120/Docs
 
 
 #### Timers & Events AutoPoll 
-If you wish to automate the results then use the auto.sh as a template to run in the background
-polling the controller .  
+As the system only updates metrics when the Controller /hubs is called, you need to 
+Poll this every xx seconds,  
+There are 2 options 
+Easyest option is crontab to execute curl localhost:14121/hubs every minute or 2
+or 
+Create a background script to run and put it in sleep mode for xx seconds before calling a request to /hubs
+
+I dont need second by second readings,  so i use cron to poll every 2 minutes
+*/2 * * * * curl -X GET localhost:14121/hubs
+
+
+
 
 ### Reference
 - GitHub : leerobo/bollnas
