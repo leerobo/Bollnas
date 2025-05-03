@@ -1,15 +1,10 @@
 # The Bollnas Project
 
-Using Grafana and Prometheus to monitor RPIs dotted around the house was always a pain that you had to config prometheus with the APIs and Ports every time,  be it when the DNS reset the IP and i forgot to give it a static IP or the router dies and i have to remember the IPs (happped once,  waste of a weekend that was)
-
-So now promethus just has access to the controller,  which is a set of APIs to force it to scan the LAN for sensorhubs (rpi),  registered them and poll them for metrics.  I will add a little GUI to show the sensorhubs status,  the latest Poll figures of sensors .
-
+Using Grafana and Prometheus to monitor RPIs dotted around the house was always a pain, Having to config prometheus with the APIs and Ports of every RPI, Then you get a DNS reset and i forgot to give a RPI a static IP or the router dies and i have to remap the IPs (happped once,  waste of a weekend that was)
 
 ## Process
-The metric or poll request comes into the Controller, it Polls all the sensorHubs at once if there is NO redis cache (which is about 2 minutes, see config) , it then repackages the reponses or cache data to responsed for the Controller.
-
-But sometimes the responses are slow (old RPIzero) or the zigbee hat needs to reset. so for houses will alot on RPIs or sensors attached i recommend an "autoPoll" Script that calls the Controller /hubs,  This refreshs the cache in the controller.  
-Only ever needed to ever run this where i'v had a couple of zigbee hats running on RPIs.  But if you see grafana has gaps , try setting this up
+So Project Bollnas is one controller that is registered to Promethueus for metrics.  the Controller polls the local network to find other RPI setup as a SensorHub,  these hold Zigbee Hats, Wire 1 Temp sensors and Relays.  
+The controller Polls the LAN daily and then every time a /hubs request comes in it polls all the SensorHubs and then compiles the metrics 
 
 ### Requirements
 | Packages | Description | |
@@ -19,7 +14,6 @@ Only ever needed to ever run this where i'v had a couple of zigbee hats running 
 | RPI.GPIO | Hub GPIO Framework | Sensor Hub Only |
 | mock.GPIO | Hub GPIO Framework | if not running a RPI |
 | redis | Caching framework | Controller only, install docker |
-
 
 ## Setup Enviroment 
 
@@ -53,6 +47,13 @@ sudo chown pi:pi venv -R
 source  venv/bin/activate
 python3 -m pip install -r requirements.txt
 ```
+
+### Config 
+there is a Config.json templete that is loaded into ConfigLoad.py 
+This holds the settings for Controllers, SensorHubs, Metrics, openApi Docs and general flags.  
+
+Word too the wise
+The github Config_Template.json needs to be renamed to Config.json for your settings,  dont upload it to github with passwords and IPs in there.  
 
 #### Setup Controller
 If this is a controller install then nano controller.env in controller directory

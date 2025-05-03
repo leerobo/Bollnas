@@ -1,0 +1,50 @@
+
+{
+    "Title": "The Bollnas Project",
+    "Description": "Sensor Hub for Main Boiler",
+    "swagger_description" : "# The Bollnas Project \n\n## The Bollnas Project\n\nThe Bollnas project is a set of sensor hubs that are used to monitor the main boiler and other sensors around the house.  The project is designed to be modular and easy to use, with a focus on simplicity and ease of use.\n\n## The Bollnas Project\n\nThe Bollnas project is a set of sensor hubs that are used to monitor the main boiler and other sensors around the house.  The project is designed to be modular and easy to use, with a focus on simplicity and ease of use.\n\n## The Bollnas Project\n\nThe Bollnas project is a set of sensor hubs that are used to monitor the main boiler and other sensors around the house.  The project is designed to be modular and easy to use, with a focus on simplicity and ease of use.\n\n## The Bollnas Project\n\nThe Bollnas project is a set of sensor hubs that are used to monitor the main boiler and other sensors around the house.  The project is designed to be modular and easy to use, with a focus on simplicity and ease of use.\n\n## The Bollnas Project\n\nThe Bollnas project is a set of sensor hubs that are used to monitor the main boiler and other sensors around the house.  The project is designed to be modular and easy to use, with a focus on simplicity and ease of use.\n",
+    "swagger_repository" :" github : leerobo/bollnas ",
+    "swagger_contact" : {"Author":"lee@ssshhhh.com"},
+    "i_read_the_damn_docs": false,  
+    "cors_origins" :  "*",
+    "metric_required" :  true,   
+
+    "Installation" : {
+        "Location" : "Bollnas",
+        "Room"     : "Garage",
+        "Reason"   : "ZigBee",
+        "Software_Version": "V0.1.3",
+        "Release_Date"    : "2025-04-01",
+        "Install_Date"    : "2025-05-15"
+    }   , 
+
+    "Cache" : {
+        "id":"Redis",
+        "Timer" : 30,                   
+        "HubTimer": 43200,              
+        "host" : "localhost",
+        "port" : 6379,
+        "db" : 0
+    },
+
+    "Security": {
+        "comms": false,                 
+        "apiKey"  : "",              
+        "pemCert" : ""           
+    },
+
+    "ControllerHub": {
+        "dns" : "192.168.1.1",                          
+        "Port_Scanner" : 14121,                  
+        "Netgear_Pwd"  : "",   
+        "piHole_Pwd"   : "",                     
+        "Static_Sensorhubs" : []                   
+    },
+
+    "SensorHubs": {
+        "Wire1dir": "/sys/bus/w1/devices/",   
+        "Wire1": false,                            
+        "Zigbee": false,                      
+        "Relays":  [{ "pin":"26","Description": "Test Relay" }]
+    }
+}
