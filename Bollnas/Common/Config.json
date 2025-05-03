@@ -20,7 +20,7 @@
 
     "Cache" : {
         "id":"Redis",
-        "Timer" : 30,                   
+        "Timer" : 150,                   
         "HubTimer": 43200,              
         "host" : "localhost",
         "port" : 6379,

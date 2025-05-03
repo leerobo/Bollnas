@@ -56,40 +56,27 @@ Word too the wise
 The github Config_Template.json needs to be renamed to Config.json for your settings,  dont upload it to github with passwords and IPs in there.  
 
 #### Setup Controller
-If this is a controller install then nano controller.env in controller directory
+When scanning the LAN, there are 3 ways to do it.  
+1. Get the list of attached devices from your router
+2. Hold a static list of IPs for your Devices
+3. Go thru a IP range 
 
-``` yml
-# Controller Level Secret Details override the Config
-netgear_password="BlobblyBob"
-```
+option 3, is the slowest and not overly clever,  option 2 is the quickest but will not find new devices.  option 1 is the middle ground. 
+To get option 1 enter your router password,  currently support netgear , but am working on pihole for later aswell.
+
+options 2 set Statis_Sensorhubs list with the ip addresses.
+
+if nothing set ,  option 3 will happen
+
 
 #### Setup SensorHub
-If this is a SensorHub install then nano sensorhub.env in sensorhub directory
+if Wire1 is true ,  make sure you have set this on via raspi-config.  then attached the sensors to pin 1 Power,7 Data,9 Gnd
 
-``` yml
-# Copy straght onto the Device and not part of the gituhb repos pull
-api_title = 'The Bollnas Project'
-api_description = "Sensor Hub for Main Boiler"
+if Zigbee, (lee do this when you know whats involved)
 
-# Security levels between Controllers and SensorHubs
-security = True
-securityKey = "apiKey"
-key = "697984d6-3844-4654-9b89-bcfdb11f5630"
-
-# Wire1 Directory 
-wire1 = True
-
-# relays BCD  
-relay = True
-GPIOrelays  = []
-GPIOdescription = {<"26":"Test_Relay"}
-
-# zigbee
-zigbee = True
-```
+Relays holds a list of pins & Descriptions,  when the system starts up the pins here are sent to outgoing and pulled down .. Off.  
 
 ### Run 
-
 #### direct
 
 ``` bash
@@ -98,6 +85,14 @@ cd Bollnas
 ./run.sh sensorhub         # As a SensorHub
 ./run.sh                   # As both a controller and sensorhub
 ```
+
+When run executes it updates the code with the latest from github,  to stop this add noupdate to the run command.
+``` bash
+./run.sh controller noupdate # As a controller   
+
+```
+Usefull if your playing around with the code
+
 
 #### systemd sensorhub
 Run These to create the service 
@@ -141,9 +136,6 @@ journalctl -u controller.service -e
 Trouble here is that RPI.gpio need permission to device,  was thinking to use
 PIGPIO or play around with the docker compose abit more ... TODO list
 
-to test go to your web browser and enter your http://<RPi ip>:14121/docs
-
-
 #### Test
 To find your IP address, for local use 127.0.0.1 or accessing a difference device use
 
@@ -152,8 +144,8 @@ ip a
 # Look at eth0/wlan0 for the inet number 
 ```
 
-if your on the same device then use <ip>:14120/Docs 
-
+to test go to your web browser and enter your http://<RPi ip>:14121/docs
+you should see the swagger API screen 
 
 #### Timers & Events AutoPoll 
 As the system only updates metrics when the Controller /hubs is called, you need to 
@@ -166,8 +158,7 @@ Create a background script to run and put it in sleep mode for xx seconds before
 I dont need second by second readings,  so i use cron to poll every 2 minutes
 */2 * * * * curl -X GET localhost:14121/hubs
 
-
-
+just remember the Cache config holds the sensor data for xx seconds set by the Timer,  make sure this is greater than your cron/script poll
 
 ### Reference
 - GitHub : leerobo/bollnas
