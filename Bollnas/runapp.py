@@ -57,9 +57,6 @@ if os.getenv("SENSORHUB")  == 'True' :  app.include_router(SensorhubRouter.route
 @app.get("/settings/(code)",status_code=status.HTTP_200_OK, name="Show Installation Settings" ,tags=["Generic"])
 async def AdminSettings(code:str ):                                   
     if code != 'Winter2BerryMoon.'  :  raise HTTPException(status_code=401, detail="Invalid Code")
-    # rtn = [getJSONConfig()]
-    # if os.getenv("SENSORHUB")  == 'True' :  rtn.append(getSensorHubConfig())
-    # if os.getenv("CONTROLLER") == 'True' :  rtn.append(getControllerConfig())
     return  getJSONconfig()
 
 # Add prometheus asgi middleware to route /metrics requests
@@ -68,7 +65,7 @@ app.mount("/metrics", metrics_app)
 
 # Force metrics not to extract platform info
 prom.REGISTRY.unregister(prom.PROCESS_COLLECTOR)    # Suppress Memory/CPU usage
-# prom.REGISTRY.unregister(prom.PLATFORM_COLLECTOR)   # Suppress Python Version
+prom.REGISTRY.unregister(prom.PLATFORM_COLLECTOR)   # Suppress Python Version
 prom.REGISTRY.unregister(prom.GC_COLLECTOR)         # Supress Collection Reg details
 
 static_dir = get_project_root() / "static"
