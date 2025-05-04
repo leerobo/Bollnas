@@ -19,7 +19,7 @@ import Common.Models.enums as enums
 from Common.ConfigLoad import getJSONconfig
 
 async def poll(): 
-    rtn=Pollschema(timestamp=str(datetime.datetime.now()),
+    rtn=Pollschema.Poll(timestamp=str(datetime.datetime.now()),
                    hubName=getJSONconfig().Installation.Room,
                    subHubName=getJSONconfig().Installation.Reason)
     # rtn['timestamp']=str(datetime.datetime.now())
