@@ -20,7 +20,7 @@ from Common.ConfigLoad import getJSONconfig
 
 async def poll(): 
     rtn=Pollschema(timestamp=str(datetime.datetime.now()),
-                   hubName=getJSONconfig().Installation.room,
+                   hubName=getJSONconfig().Installation.Room,
                    subHubName=getJSONconfig().Installation.Reason)
     # rtn['timestamp']=str(datetime.datetime.now())
     # rtn['hubName']=getJSONconfig().Installation.room
