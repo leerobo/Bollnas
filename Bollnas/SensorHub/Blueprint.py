@@ -19,6 +19,7 @@ from rich import print as rprint
 from Common.ConfigLoad import getJSONconfig
 import Common.Managers.pollSensors as pollSensors
 import Common.Models.enums as enums
+import Common.Schemas.poll as Pollschema
 
 from dotenv import load_dotenv
 from Common.Managers import decorators
@@ -57,7 +58,7 @@ def ping():
 @router.get("/poll",status_code=status.HTTP_200_OK,
     name="Poll Sensor Status",
     description='Force a Poll on all Attached Sensors & Switches and cache results',
-    response_model=dict
+    response_model=Pollschema.Poll
 )
 @decorators.token_required
 async def poll( headers: Annotated[HTTPheaders.Headers, Header()] ):

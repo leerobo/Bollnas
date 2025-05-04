@@ -18,7 +18,7 @@ import Common.Schemas.Sensors.wire1 as wire1
 import Common.Models.enums as enums
 from Common.ConfigLoad import getJSONconfig
 
-async def poll(): 
+async def poll() -> Pollschema.Poll: 
     rtn=Pollschema.Poll(timestamp=str(datetime.datetime.now()),
                    hubName=getJSONconfig().Installation.Room,
                    subHubName=getJSONconfig().Installation.Reason)
