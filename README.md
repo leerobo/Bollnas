@@ -17,7 +17,9 @@ The controller Polls the LAN daily and then every time a /hubs request comes in 
 
 ## Setup Enviroment 
 
-Make Directory Github/Bollnas.
+
+Sudo apt Update
+Sudo apt Upgrade
 
 #### Install GIT
 change main to the branch your working on
@@ -40,6 +42,10 @@ docker run -d \
   redis:latest 
 
 #### Venv
+
+You might need to install pip first
+sudo apt install pip 
+
 Create a Venv area on the RPI and download required packages
 ``` bash
 sudo python3 -m venv venv
@@ -56,6 +62,9 @@ Word too the wise
 The github Config_Template.json needs to be renamed to Config.json for your settings,  dont upload it to github with passwords and IPs in there.  
 
 #### Setup Controller
+
+To install : https://raspberrytips.com/docker-on-raspberry-pi/
+
 When scanning the LAN, there are 3 ways to do it.  
 1. Get the list of attached devices from your router
 2. Hold a static list of IPs for your Devices

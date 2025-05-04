@@ -14,12 +14,13 @@ from prometheus_client.metrics import _build_full_name
 # TODO :  Workout if you lost a sensor
 def setPrometheusMetrics(Schema:list):
       rprint("[orange3]CNTL:     [/orange3][yellow]Building Prometheus Metrics[/yellow]")
+      HubName=Schema.hubName 
+      SubHubName=Schema.subHubName
       for pins in Schema.GPIOsettings:
          if pins.status == enums.GPIOstatus.ok:
             try:
                fullName=_build_full_name(metric_type='enum',name='P'+str(pins.pin),
-                                   namespace=getJSONconfig().Installation.Location,
-                                   subsystem=getJSONconfig().Installation.Room+'-'+getJSONconfig().Installation.Reason,
+                                   namespace=HubName,subsystem=SubHubName,
                                    unit='')
  
                if fullName in prom.REGISTRY._names_to_collectors:
@@ -36,7 +37,7 @@ def setPrometheusMetrics(Schema:list):
                   )
                if   pins.value == 0 :  e.state('on')            
                elif pins.value == -1 : e.state('unknown') 
-               else :                e.state('off')
+               else :                  e.state('off')
             except Exception as ex:
                rprint("[red]CNTL:     [/red]",fullName,':',ex)
                traceback.print_exc()
@@ -44,8 +45,7 @@ def setPrometheusMetrics(Schema:list):
 
       for W1 in Schema.wire1Sensors:
             fullName=_build_full_name(metric_type='enum',name=W1.id[3:],
-                                   namespace=getJSONconfig().Installation.Location ,
-                                   subsystem=getJSONconfig().Installation.Room+'_'+getJSONconfig().Installation.Reason ,
+                                   namespace=HubName,subsystem=SubHubName,
                                    unit='')            
             try:
                if fullName in prom.REGISTRY._names_to_collectors:
@@ -54,7 +54,6 @@ def setPrometheusMetrics(Schema:list):
                else: 
                   rprint("[orange3]CNTL:     [/orange3][yellow]New Metrics[/yellow]",fullName)
                   e = Gauge(
-                     namespace=getJSONconfig().Installation.Location ,
                      subsystem=getJSONconfig().Installation.Room+'_'+getJSONconfig().Installation.Reason  ,
                      name=W1.id[3:],
                      documentation=str(W1.type.name)+'-'+str(W1.measurement.value)

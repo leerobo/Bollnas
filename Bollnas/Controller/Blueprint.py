@@ -82,7 +82,7 @@ async def scan_hubs():                                      #  Scan Available se
             sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getJSONconfig().ControllerHub.Port_Scanner))
             sensorSchema=Poll.Poll(**sensorsRtn.json())
 
-      rtn.polls[getHubs.name]=sensorSchema
+      rtn.polls[sensorSchema.hubName+'_'+sensorSchema.subHubName]=sensorSchema
 
       # Set Prometheus Metrics if Required
       if getJSONconfig().metric_required:
