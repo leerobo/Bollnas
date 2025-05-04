@@ -22,12 +22,8 @@ async def poll() -> Pollschema.Poll:
     rtn=Pollschema.Poll(timestamp=str(datetime.datetime.now()),
                    hubName=getJSONconfig().Installation.Room,
                    subHubName=getJSONconfig().Installation.Reason)
-    # rtn['timestamp']=str(datetime.datetime.now())
-    # rtn['hubName']=getJSONconfig().Installation.room
-    # rtn['subHubName']=getJSONconfig().Installation.Reason
     rtn.wire1Sensors=pollWire1()
     rtn.GPIOsettings=pollGPIO()
-    rprint('Poll :',rtn)    
     return rtn
           
 # ---------------- WIRE 1 find and read --------------------
