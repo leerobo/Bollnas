@@ -17,7 +17,6 @@ The controller Polls the LAN daily and then every time a /hubs request comes in 
 
 ## Setup Enviroment 
 
-
 Sudo apt Update
 Sudo apt Upgrade
 

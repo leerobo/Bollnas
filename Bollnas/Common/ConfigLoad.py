@@ -66,7 +66,7 @@ class Settings(BaseSettings,extra="allow"):
 
 #@lru_cache
 def getJSONconfig() -> Settings:
-    with open(get_project_root() / 'Common/Config.json', 'r') as file:
+    with open(get_project_root() / 'Config.json', 'r') as file:
         # data = json.loads(re.sub("//.*","",file,flags=re.MULTILINE))
         data = json.load(file)
     try:

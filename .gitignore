@@ -1,7 +1,7 @@
 ### Required for Unit Testing not for Offical Release
 #Cert/
 #Config
-Config.json.*
+Config.json
 
 
 ### VS Code & venv ###
