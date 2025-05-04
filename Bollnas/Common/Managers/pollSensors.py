@@ -25,7 +25,6 @@ async def poll():
     # rtn['timestamp']=str(datetime.datetime.now())
     # rtn['hubName']=getJSONconfig().Installation.room
     # rtn['subHubName']=getJSONconfig().Installation.Reason
-    rtn
     rtn.wire1Sensors=pollWire1()
     rtn.GPIOsettings=pollGPIO()
     rprint('Poll :',rtn)    
