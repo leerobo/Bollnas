@@ -1,11 +1,11 @@
 ### Required for Unit Testing not for Offical Release
 #Cert/
 #Config
+**/Config.json
 
 ### VS Code & venv ###
 .vscode/
-.vscode/*
-.vscode/settings.json
+.vscode/**
 venv
 
 # Ignore Python bytecode
@@ -15,5 +15,4 @@ __pycache__/
 *.bak
 
 # Dev drops
-Config.json
 prometheus_multiproc_dir/
