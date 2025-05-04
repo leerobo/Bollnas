@@ -16,6 +16,9 @@ def setPrometheusMetrics(Schema:list):
       rprint("[orange3]CNTL:     [/orange3][yellow]Building Prometheus Metrics[/yellow]")
       HubName=Schema.hubName 
       SubHubName=Schema.subHubName
+
+      rprint("[orange3]CNTL:     [/orange3][yellow]Hub Metrics[/yellow]",Schema)
+
       for pins in Schema.GPIOsettings:
          if pins.status == enums.GPIOstatus.ok:
             try:

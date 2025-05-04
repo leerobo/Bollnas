@@ -46,7 +46,8 @@ app = FastAPI(
     contact=getJSONconfig().swagger_contact,
     version=getJSONconfig().Installation.Software_Version,
     swagger_ui_parameters={"defaultModelsExpandDepth": 0},
-    lifespan=lifespan
+    lifespan=lifespan,
+    redirect_slashes=False
 )
 
 if os.getenv("CONTROLLER") == 'True' :  app.include_router(ControllerRouter.router)
