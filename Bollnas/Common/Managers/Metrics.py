@@ -54,7 +54,7 @@ def setPrometheusMetrics(Schema:list):
                else: 
                   rprint("[orange3]CNTL:     [/orange3][yellow]New Metrics[/yellow]",fullName)
                   e = Gauge(
-                     subsystem=getJSONconfig().Installation.Room+'_'+getJSONconfig().Installation.Reason  ,
+                     namespace=HubName,subsystem=SubHubName,
                      name=W1.id[3:],
                      documentation=str(W1.type.name)+'-'+str(W1.measurement.value)
                   )
