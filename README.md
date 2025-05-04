@@ -169,6 +169,16 @@ I dont need second by second readings,  so i use cron to poll every 2 minutes
 
 just remember the Cache config holds the sensor data for xx seconds set by the Timer,  make sure this is greater than your cron/script poll
 
+
+### Prometheus 
+``` bash
+  - job_name: 'BollnasController'
+    follow_redirects: true
+    metrics_path: /metrics/
+    static_configs:
+    - targets: ['bollnascontroller.local:14121']
+```
+
 ### Reference
 - GitHub : leerobo/bollnas
 - Docker Hub :

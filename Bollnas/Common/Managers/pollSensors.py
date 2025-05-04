@@ -21,6 +21,8 @@ from Common.ConfigLoad import getJSONconfig
 async def poll(): 
     rtn={}
     rtn['timestamp']=str(datetime.datetime.now())
+    rtn['hubName']=getJSONconfig().Installation.room
+    rtn['subHubName']=getJSONconfig().Installation.Reason
     rtn['wire1Sensors']=pollWire1()
     rtn['GPIOsettings']=pollGPIO()
     rprint('Poll :',rtn)    
