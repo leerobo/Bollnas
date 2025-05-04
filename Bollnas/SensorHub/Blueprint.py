@@ -58,7 +58,6 @@ def ping():
     name="Poll Sensor Status",
     description='Force a Poll on all Attached Sensors & Switches and cache results',
     response_model=dict
- 
 )
 @decorators.token_required
 async def poll( headers: Annotated[HTTPheaders.Headers, Header()] ):

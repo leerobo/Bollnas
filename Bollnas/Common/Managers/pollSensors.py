@@ -12,19 +12,22 @@ import sys, os, time, datetime, glob
 # from array import array
 # from typing import Union
 
+import Common.Schemas.poll as Pollschema
 import Common.Schemas.Sensors.gpio as gpio
 import Common.Schemas.Sensors.wire1 as wire1
 import Common.Models.enums as enums
-#from Bollnas.Common.zzzzzConfig import getConfig  
 from Common.ConfigLoad import getJSONconfig
 
 async def poll(): 
-    rtn={}
-    rtn['timestamp']=str(datetime.datetime.now())
-    rtn['hubName']=getJSONconfig().Installation.room
-    rtn['subHubName']=getJSONconfig().Installation.Reason
-    rtn['wire1Sensors']=pollWire1()
-    rtn['GPIOsettings']=pollGPIO()
+    rtn=Pollschema(timestamp=str(datetime.datetime.now()),
+                   hubName=getJSONconfig().Installation.room,
+                   subHubName=getJSONconfig().Installation.Reason)
+    # rtn['timestamp']=str(datetime.datetime.now())
+    # rtn['hubName']=getJSONconfig().Installation.room
+    # rtn['subHubName']=getJSONconfig().Installation.Reason
+    rtn
+    rtn.wire1Sensors=pollWire1()
+    rtn.GPIOsettings=pollGPIO()
     rprint('Poll :',rtn)    
     return rtn
           
