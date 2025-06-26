@@ -9,3 +9,4 @@ class Status(BaseModel):
     measurement: enums.SensorMeasurement  = Field(default=enums.SensorMeasurement.number,json_schema_extra={ 'description': 'Sensor Value Measurement Type'} ) 
     platform: enums.SensorPlatform        = Field(default=enums.SensorPlatform.unknown,json_schema_extra={ 'description': 'Sensor Platform'} ) 
     description: str                      = Field(default='',json_schema_extra={ 'description': 'Sensor Description'} ) 
+    read: enums.SensorStatus              = Field(default=enums.SensorStatus.ok,json_schema_extra={ 'description':'read status'} ) 

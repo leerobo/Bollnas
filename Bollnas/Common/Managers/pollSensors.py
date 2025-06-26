@@ -44,15 +44,18 @@ def pollWire1() -> list[wire1.Status]:
             TT=device.split("/")
             SID = TT[len(TT)-1]
             sensorVal=readWire1(SID)
-            if sensorVal > -999:
-               wire1Sensors.append( wire1.Status(
+            print(device,'--',sensorVal)
+            if sensorVal > -999 :
+                w1=wire1.Status(
                                  id='W1_S'+SID[3:], 
                                  type=enums.SensorType.DS18B20, 
                                  measurement=enums.SensorMeasurement.c, 
                                  platform=enums.SensorPlatform.wire1, 
                                  value=sensorVal,
                                  description=getDescriptions('W1_S'+SID[3:])
-                                 )  )
+                        )  
+                if sensorVal == 85:    w1.read=enums.SensorStatus.warning
+                wire1Sensors.append( w1 )
 
     return wire1Sensors
 

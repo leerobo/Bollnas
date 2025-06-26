@@ -41,6 +41,14 @@ class SensorMeasurement(Enum):
     percent  = "Percentage"       
     number   = "Number"
 
+class SensorStatus(Enum):
+    """Supported Sensor Status """
+
+    ok        = "ok"
+    warning   = "Warning"    
+    readError = "ReadError"    
+
+
 # Pin controllers
 
 class GPIOdirection(Enum):

@@ -21,7 +21,7 @@ if [ "$1" != "noupdate" ] && [ "$2" != "noupdate" ]; then
     echo "Github API starting"
 fi    
 
-export ROOTPATH="/home/$USER/Github/Home/Bollnas"
+export ROOTPATH="/home/$USER/Bollnas"
 
 # $ROOTPATH/venv/bin/python3 $ROOTPATH/venv/bin/fastapi dev $ROOTPATH/Bollnas/runapp.py --port 14121 --host 0.0.0.0
 python3 $ROOTPATH/venv/bin/fastapi dev $ROOTPATH/Bollnas/runapp.py --port 14121 --host 0.0.0.0
