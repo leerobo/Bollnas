@@ -40,6 +40,7 @@ async def scan():
     """
     cacheKey='HubCache'
     Hubs=scan_lan()
+
     await redis.set_cache(data=Hubs,keys=cacheKey,dur=getJSONconfig().Cache.HubTimer)
     rprint('[yellow]SCAN     [/yellow] SensorHub Scanner Refreshed')
     return Hubs

@@ -15,4 +15,4 @@ class FullPoll(BaseModel):
     timestamp: str                     = Field(default=None,json_schema_extra={ 'description': 'Sensor Poll TimeStamp'} ) 
     polls: dict                        = Field(default=None,json_schema_extra={ 'description': 'SensorHub Poll'} ) 
 
- 
+
