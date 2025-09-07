@@ -8,7 +8,7 @@ except:
     rprint("[yellow]WARNING:  [/yellow]Running Mock GPIO on non RPI Device > pip install rpi.gpio")
     import Mock.GPIO as GPIO
     
-import sys, os, time, datetime, glob
+import sys, os, time, datetime, glob, requests
 # from array import array
 # from typing import Union
 
@@ -16,6 +16,7 @@ import Common.Schemas.poll as Pollschema
 import Common.Schemas.Sensors.gpio as gpio
 import Common.Schemas.Sensors.wire1 as wire1
 import Common.Models.enums as enums
+
 from Common.ConfigLoad import getJSONconfig
 
 async def poll() -> Pollschema.Poll: 
@@ -77,6 +78,49 @@ def readWire1(SID) -> float:
     except Exception as ex:
         rprint('[red]Sensor {} Read Error : {}'.format(SID,ex) )
         return -999
+
+# ---------------- ZIGBEE Poll --------------------
+
+def ZigbeePoll() -> list[wire1.Status]:
+    """ ## Zigbee Poll
+     Poll Zigbee (conbeeII)    
+    """
+    rprint("[orange3]CNTL:     [/orange3][yellow]Polling Zigbee ..... [/yellow]")  
+    # Fixed static LAN addresses
+ 
+    # //192.168.1.21/api/EA344E51D7/
+
+    try :
+      rprint("[orange3]CNTL:     [/orange3][yellow]Polling Zigbee ..... [/yellow] "+getJSONconfig().Zigbee)  
+      x = requests.get('http://{}/api/{}'.format(getJSONconfig().Zigbee.ZigBeeIP,getJSONconfig().Zigbee.ZigBeeCDE),timeout=1)
+      rprint("[yellow]INFO:     [/yellow][yellow]Static Address Attached {}[/yellow]".format(x) )      
+    except Exception as ex :
+      rprint("[yellow]WARNING:     [/yellow][yellow]Static Address Lost [/yellow]  ({})".format(ex) )      
+      pass  
+
+    wire1Sensors=[]
+
+    # if devicelist!='':
+    #     for device in devicelist:
+    #         TT=device.split("/")
+    #         SID = TT[len(TT)-1]
+    #         sensorVal=readWire1(SID)
+    #         print(device,'--',sensorVal)
+    #         if sensorVal > -999 :
+    #             w1=wire1.Status(
+    #                              id='W1_S'+SID[3:], 
+    #                              type=enums.SensorType.DS18B20, 
+    #                              measurement=enums.SensorMeasurement.c, 
+    #                              platform=enums.SensorPlatform.wire1, 
+    #                              value=sensorVal,
+    #                              description=getDescriptions('W1_S'+SID[3:])
+    #                     )  
+    #             if sensorVal == 85:    w1.read=enums.SensorStatus.warning
+    #             wire1Sensors.append( w1 )
+
+    return wire1Sensors
+
+ 
 
 # ---------------- GPIO Pin Reads --------------------
 
