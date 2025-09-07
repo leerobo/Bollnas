@@ -25,6 +25,7 @@ async def poll() -> Pollschema.Poll:
                    subHubName=getJSONconfig().Installation.Reason)
     rtn.wire1Sensors=pollWire1()
     rtn.GPIOsettings=pollGPIO()
+    ZigbeePoll()
     return rtn
           
 # ---------------- WIRE 1 find and read --------------------

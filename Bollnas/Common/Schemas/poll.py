@@ -10,6 +10,7 @@ class Poll(BaseModel):
     subHubName: str                    = Field(default="SensorHub",json_schema_extra={ 'description': 'Sub SensorHub Name'} )
     wire1Sensors: list[wire1.Status]   = Field(default=[],json_schema_extra={ 'description': 'Wire 1 Sensors'} ) 
     GPIOsettings: list[gpio.Pins]      = Field(default=[],json_schema_extra={ 'description': 'GPIO status'} ) 
+    Zigbee: list[gpio.Pins]            = Field(default=[],json_schema_extra={ 'description': 'Zigbee Devices status'} ) 
 
 class FullPoll(BaseModel):
     timestamp: str                     = Field(default=None,json_schema_extra={ 'description': 'Sensor Poll TimeStamp'} ) 
