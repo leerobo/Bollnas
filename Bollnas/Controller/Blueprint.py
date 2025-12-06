@@ -51,7 +51,7 @@ async def scan():
     response_model=Poll.FullPoll,
     name="response with sensorhub sensors and update Metrics"
 )
-async def scan_hubs():                                      #  Scan Available sensorHubs and return responses 
+async def scan_hubs(refresh:bool=False):                                      #  Scan Available sensorHubs and return responses 
     """
     Responses all attached SensorHubs information and setups the metrics formatted collections
     """    
@@ -71,7 +71,7 @@ async def scan_hubs():                                      #  Scan Available se
     rtn=Poll.FullPoll(timestamp=str(datetime.datetime.now()) ,polls={})
     for getHubs in scannHub.SensorHubs:
       try:
-          if await redis.exists(getHubs.name) == 0:                #  Scan for Hubs sensor details if Cache has expired
+          if await redis.exists(getHubs.name) == 0 or refresh:     #  Scan for Hubs sensor details if Cache has expired
             sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getJSONconfig().ControllerHub.Port_Scanner))
             sensorSchema=Poll.Poll(**sensorsRtn.json())
             print('Refresh Redis Cache Scan')
