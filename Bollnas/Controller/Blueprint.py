@@ -55,6 +55,7 @@ async def scan_hubs():                                      #  Scan Available se
     """
     Responses all attached SensorHubs information and setups the metrics formatted collections
     """    
+    print('--Controller Hubs')
     cacheKey='HubCache'
     try:
        if await redis.exists(cacheKey) == 0:                #  Scan for Hubs if Cache has expired
@@ -73,8 +74,10 @@ async def scan_hubs():                                      #  Scan Available se
           if await redis.exists(getHubs.name) == 0:                #  Scan for Hubs sensor details if Cache has expired
             sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getJSONconfig().ControllerHub.Port_Scanner))
             sensorSchema=Poll.Poll(**sensorsRtn.json())
+            print('Refresh Redis Cache Scan')
             await redis.set_cache(data=sensorSchema,keys=getHubs.name)
           else:  
+            print('Redis Cache Scan')
             cachedData=await redis.get_cache(keys=getHubs.name)
             sensorSchema=Poll.Poll(**cachedData)
             
