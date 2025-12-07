@@ -36,8 +36,8 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     for relay in getJSONconfig().SensorHubs.Relays:
         pollSensors.GPIOinit( gpio.PinChange( pin=relay['pin'], task=enums.GPIOtask.off ) )
     rprint('[blue]INFO:    [/blue] Initiated Routines Complete')      
-    redis.clear_all()
-    rprint('[blue]INFO:    [/blue] Cache Cleared')      
+    await redis.del_cache('HubCache')
+    rprint('[blue]INFO:    [/blue] HubCache Cache Cleared')      
     yield
 
 app = FastAPI(
