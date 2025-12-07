@@ -55,13 +55,15 @@ async def scan_hubs(refresh:bool=False):                                      # 
     """
     Responses all attached SensorHubs information and setups the metrics formatted collections
     """    
-    print('--Controller Hubs')
+    print('--Controller Hubs >>> ',cacheKey)
     cacheKey='HubCache'
     try:
-       if await redis.exists(cacheKey) == 0:                #  Scan for Hubs if Cache has expired
+       if await redis.exists(cacheKey) == 0 or refresh:     #  Scan for Hubs if Cache has expired
           scannHub = scan_lan()
+          print(" New Scan Taken ")
           await redis.set_cache(data=scannHub,keys=cacheKey,dur=getJSONconfig().Cache.HubTimer) 
        else:   
+          print(" Redis Scan extract")
           scannHub=Hubs.Hubs(**await redis.get_cache(cacheKey))
 
     except Exception as ex:
