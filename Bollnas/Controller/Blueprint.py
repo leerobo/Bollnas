@@ -55,18 +55,14 @@ async def scan_hubs(refresh:bool=False):                                      # 
     """
     Responses all attached SensorHubs information and setups the metrics formatted collections
     """    
-    print('--Controller Hubs ',getJSONconfig().Cache.HubTimer) 
     cacheKey='HubCache'
-
-    print(cacheKey,'--',await redis.exists(cacheKey))
 
     try:
        if await redis.exists(cacheKey) == 0:     #  Scan for Hubs if Cache has expired
           scannHub = scan_lan()
-          print(" New Scan Taken ")
+          rprint("[green]CNTL:     [/green]New Network Scan Called")
           await redis.set_cache(data=scannHub,keys=cacheKey,dur=getJSONconfig().Cache.HubTimer) 
        else:   
-          print(" Redis Hub Scan extract")
           scannHub=Hubs.Hubs(**await redis.get_cache(cacheKey))
 
     except Exception as ex:
@@ -79,13 +75,11 @@ async def scan_hubs(refresh:bool=False):                                      # 
           if await redis.exists(getHubs.name) == 0 or refresh:     #  Scan for Hubs sensor details if Cache has expired
             sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getJSONconfig().ControllerHub.Port_Scanner))
             sensorSchema=Poll.Poll(**sensorsRtn.json())
-            print('Refresh Redis Cache Scan',getHubs.name)
-            print(sensorSchema)
+            rprint("[blue]CNTL:     [/blue]New Scanning Hub ",getHubs)
             await redis.set_cache(data=sensorSchema,keys=getHubs.name)
           else:  
-            print('Redis Cache Scan',getHubs.name)
+            rprint("[blue]CNTL:     [/blue]Cache Scanning Hub ",getHubs)
             cachedData=await redis.get_cache(keys=getHubs.name)
-            print(cachedData)
             sensorSchema=Poll.Poll(**cachedData)
             
       except Exception as ex:
