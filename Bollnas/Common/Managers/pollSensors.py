@@ -37,9 +37,12 @@ def pollWire1() -> list[wire1.Status]:
     """
     wire1Sensors=[]
     SIDs=[]
-    if not getJSONconfig().SensorHubs.Wire1 : return wire1Sensors
+    if not getJSONconfig().SensorHubs.Wire1 : 
+        print('**WARNING** Config SensorHubs.Wire1 not set')
+        return wire1Sensors
 
     devicelist = glob.glob(getJSONconfig().SensorHubs.Wire1dir+'28*')   #  DS18 Sensors
+
 
     if devicelist!='':
         for device in devicelist:
@@ -58,6 +61,8 @@ def pollWire1() -> list[wire1.Status]:
                         )  
                 if sensorVal == 85:    w1.read=enums.SensorStatus.warning
                 wire1Sensors.append( w1 )
+    else:
+        print('**WARNING** No Devices Found on SensorHub')            
 
     return wire1Sensors
 
