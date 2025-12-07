@@ -18,6 +18,7 @@ import prometheus_client as prom
 
 import SensorHub.Blueprint as SensorhubRouter
 import Controller.Blueprint as ControllerRouter
+import Common.Managers.redis as redis
 
 import Common.Managers.pollSensors as pollSensors
 
@@ -34,7 +35,9 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     rprint('[blue]INFO:    [/blue] Initiated Routines Running')
     for relay in getJSONconfig().SensorHubs.Relays:
         pollSensors.GPIOinit( gpio.PinChange( pin=relay['pin'], task=enums.GPIOtask.off ) )
-    rprint('[blue]INFO:    [/blue] Initiated Routines Complete')        
+    rprint('[blue]INFO:    [/blue] Initiated Routines Complete')      
+    redis.clear_all()
+    rprint('[blue]INFO:    [/blue] Cache Cleared')      
     yield
 
 app = FastAPI(

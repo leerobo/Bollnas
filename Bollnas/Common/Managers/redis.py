@@ -30,3 +30,6 @@ async def get_cache(keys='bollnas') -> dict:
 
 async def exists(key):
      return r.exists(key)
+
+async def clear_all():
+    r.flushall(asynchronous=False)
