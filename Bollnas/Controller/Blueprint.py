@@ -55,7 +55,7 @@ async def scan_hubs(refresh:bool=False):                                      # 
     """
     Responses all attached SensorHubs information and setups the metrics formatted collections
     """    
-    print('--Controller Hubs >>> ',cacheKey)
+    print('--Controller Hubs ',getJSONconfig().Cache.HubTimer) 
     cacheKey='HubCache'
     try:
        if await redis.exists(cacheKey) == 0 or refresh:     #  Scan for Hubs if Cache has expired
