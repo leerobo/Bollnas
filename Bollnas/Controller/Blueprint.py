@@ -57,6 +57,9 @@ async def scan_hubs(refresh:bool=False):                                      # 
     """    
     print('--Controller Hubs ',getJSONconfig().Cache.HubTimer) 
     cacheKey='HubCache'
+
+    print(cacheKey,'--',await redis.exists(cacheKey))
+
     try:
        if await redis.exists(cacheKey) == 0 or refresh:     #  Scan for Hubs if Cache has expired
           scannHub = scan_lan()
