@@ -72,15 +72,9 @@ async def scan_hubs(refresh:bool=False):                                      # 
     rtn=Poll.FullPoll(timestamp=str(datetime.datetime.now()) ,polls={})
     for getHubs in scannHub.SensorHubs:
       try:
-          if await redis.exists(getHubs.name) == 0 or refresh:     #  Scan for Hubs sensor details if Cache has expired
             sensorsRtn=requests.get(url='http://{}:{}/poll'.format(getHubs.ip,getJSONconfig().ControllerHub.Port_Scanner))
             sensorSchema=Poll.Poll(**sensorsRtn.json())
             rprint("[blue]CNTL:     [/blue]New Scanning Hub ",getHubs)
-            await redis.set_cache(data=sensorSchema,keys=getHubs.name)
-          else:  
-            rprint("[blue]CNTL:     [/blue]Cache Scanning Hub ",getHubs)
-            cachedData=await redis.get_cache(keys=getHubs.name)
-            sensorSchema=Poll.Poll(**cachedData)
             
       except Exception as ex:
             rprint("[yellow]CNTL:     [/yellow][red]Dynamic Polling[/red]",ex)
