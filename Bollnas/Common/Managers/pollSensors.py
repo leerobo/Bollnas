@@ -43,13 +43,12 @@ def pollWire1() -> list[wire1.Status]:
 
     devicelist = glob.glob(getJSONconfig().SensorHubs.Wire1dir+'28*')   #  DS18 Sensors
 
-
     if devicelist!='':
         for device in devicelist:
             TT=device.split("/")
             SID = TT[len(TT)-1]
             sensorVal=readWire1(SID)
-            print(device,'--',sensorVal)
+            rprint(f'[yellow]SensorHub [/yellow]Sensor {device} set too {sensorVal}' )
             if sensorVal > -999 :
                 w1=wire1.Status(
                                  id='W1_S'+SID[3:], 
