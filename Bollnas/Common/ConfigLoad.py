@@ -18,7 +18,6 @@ import Common.Models.enums as enums
 class TheInstallation(BaseSettings,extra="allow"):
     Location: str 
     Room: str 
-    Reason: str 
     Software_Version: str = "0.0.1" 
     Release_Date: str     = "2024-09-25"
     Install_Date: str     = "2024-09-25"
