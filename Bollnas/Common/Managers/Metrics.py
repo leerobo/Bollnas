@@ -58,7 +58,7 @@ def setPrometheusMetrics(Schema:list):
                   rprint("[orange3]CNTL:     [/orange3][yellow]New Metrics[/yellow]",fullName)
                   e = Gauge(
                      namespace=HubName,subsystem=SubHubName,
-                     name=W1.id[3:],
+                     name=W1.name,
                      documentation=str(W1.type.name)+'-'+str(W1.measurement.value)
                   )
                e.set(W1.value)            
