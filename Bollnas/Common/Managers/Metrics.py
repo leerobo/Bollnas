@@ -62,7 +62,7 @@ def setPrometheusMetrics(Schema:list):
                      labelnames=['sensorhub','sensorplace'],
                      documentation=str(W1.type.name)+'-'+str(W1.measurement.value)
                   )
-               e.labels(sensorhub=HubName,sensorplace=SubHubName)   
-               e.set(W1.value)            
+               e.labels(sensorhub=HubName,sensorplace=SubHubName).set(W1.value)   
+           
             except Exception as ex:
                rprint("[red]CNTL:     [/red]",fullName,':',ex)
