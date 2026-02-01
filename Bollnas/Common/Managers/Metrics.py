@@ -47,7 +47,7 @@ def setPrometheusMetrics(Schema:list):
                return
 
       for W1 in Schema.wire1Sensors:
-            fullName=_build_full_name(metric_type='enum',name=W1.id[3:],
+            fullName=_build_full_name(metric_type='enum',name=W1.name,
                                    namespace=HubName,subsystem=SubHubName,
                                    unit='')            
             try:
@@ -59,8 +59,10 @@ def setPrometheusMetrics(Schema:list):
                   e = Gauge(
                      namespace=HubName,subsystem=SubHubName,
                      name=W1.name,
+                     labelnames=['sensorhub','sensorplace'],
                      documentation=str(W1.type.name)+'-'+str(W1.measurement.value)
                   )
+               e.labels(sensorhub=HubName,sensorplace=SubHubName)   
                e.set(W1.value)            
             except Exception as ex:
                rprint("[red]CNTL:     [/red]",fullName,':',ex)

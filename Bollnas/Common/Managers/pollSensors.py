@@ -166,7 +166,7 @@ def getDescriptions(pinW1) -> str:
 def getW1name(pinW1) -> str:
     for sensors in getJSONconfig().SensorHubs.Sensors:
         if str(pinW1) in sensors['id'] : return sensors['name']
-    return pinW1
+    return "W1_S"+str(pinW1)
 
 # Control GPIO Pins 
 def GPIOread(pinReq:gpio.PinChange) -> gpio.PinChange:
