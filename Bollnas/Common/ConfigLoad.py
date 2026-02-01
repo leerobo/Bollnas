@@ -28,6 +28,7 @@ class TheSensorHubs(BaseSettings,extra="allow"):
     Wire1: bool      = False
     Zigbee: bool     = False
     Relays: list[dict[str, str]] = {}
+    Sensors: list[dict[str, str]] = {}
 
 class TheController(BaseSettings,extra="allow"):
     dns : str   =  Field(default="192.168.1.1")

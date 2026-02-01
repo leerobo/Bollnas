@@ -33,7 +33,7 @@ def setPrometheusMetrics(Schema:list):
                   rprint("[orange3]CNTL:     [/orange3][yellow]New Metrics[/yellow]",fullName)
                   e = Enum(
                      namespace=getJSONconfig().Installation.Location ,
-                     subsystem=getJSONconfig().Installation.Room+'_'+getJSONconfig().Installation.Reason ,
+                     subsystem=getJSONconfig().Installation.Room+'_'+getJSONconfig().Installation.Room ,
                      name='P'+str(pins.pin),
                      documentation='BCD Pin-{}'.format(pins.pin),
                      states=['on', 'off', 'unknown']

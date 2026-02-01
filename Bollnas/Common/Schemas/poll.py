@@ -6,8 +6,8 @@ from Common.Schemas.Sensors import wire1, gpio
 
 class Poll(BaseModel):
     timestamp: str                     = Field(default=None,json_schema_extra={ 'description': 'Sensor Poll TimeStamp'} ) 
-    hubName: str                       = Field(default="Bollnas",json_schema_extra={ 'description': 'SensorHub Name'} )
-    subHubName: str                    = Field(default="SensorHub",json_schema_extra={ 'description': 'Sub SensorHub Name'} )
+    hubName: str                       = Field(default="Bollnas",json_schema_extra={ 'description': 'SensorHub Location'} )
+    subHubName: str                    = Field(default="SensorHub",json_schema_extra={ 'description': 'Sub SensorHub Room'} )
     wire1Sensors: list[wire1.Status]   = Field(default=[],json_schema_extra={ 'description': 'Wire 1 Sensors'} ) 
     GPIOsettings: list[gpio.Pins]      = Field(default=[],json_schema_extra={ 'description': 'GPIO status'} ) 
     Zigbee: list[gpio.Pins]            = Field(default=[],json_schema_extra={ 'description': 'Zigbee Devices status'} ) 

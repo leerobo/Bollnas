@@ -12,10 +12,9 @@
     "Installation" : {
         "Location" : "Bollnas",
         "Room"     : "Garage",
-        "Reason"   : "ZigBee",
-        "Software_Version": "V0.1.3",
-        "Release_Date"    : "2025-04-01",
-        "Install_Date"    : "2025-05-15"
+        "Software_Version": "V0.1.4",
+        "Release_Date"    : "2026-02-01",
+        "Install_Date"    : "2026-02-03"
     }   , 
 
     "Cache" : {
@@ -45,6 +44,9 @@
         "Wire1dir": "/sys/bus/w1/devices/",   
         "Wire1": false,                            
         "Zigbee": false,                      
-        "Relays":  [{ "pin":"26","Description": "Test Relay" }]
+        "Relays":  [{ "pin":"26","Description": "Test Relay" }],
+        "Sensors": {"28-01192dfb2f2" :"HotBox", 
+                    "28-01192dfbef0b":"BoilerRoom",
+                    "28-011937d9ef37":"Outside"}
     }
 }

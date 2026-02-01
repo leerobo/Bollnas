@@ -3,6 +3,7 @@ import Common.Models.enums as enums
 
 class Status(BaseModel):
     id: str
+    name:str                              = Field(default=None,json_schema_extra={ 'description': 'Sensor ID linked to a name/type'} )     
     description:str                       = Field(default=None,json_schema_extra={ 'description': 'Sensor Description'} ) 
     value: float                          = Field(default=-81,json_schema_extra={ 'description': 'Sensor Value'} ) 
     type: enums.SensorType                = Field(default=enums.SensorType.unknown,json_schema_extra={ 'description': 'Sensor Type'} ) 

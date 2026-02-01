@@ -21,8 +21,8 @@ from Common.ConfigLoad import getJSONconfig
 
 async def poll() -> Pollschema.Poll: 
     rtn=Pollschema.Poll(timestamp=str(datetime.datetime.now()),
-                   hubName=getJSONconfig().Installation.Room,
-                   subHubName=getJSONconfig().Installation.Reason)
+                   hubName=getJSONconfig().Installation.Location,
+                   subHubName=getJSONconfig().Installation.Room)
     rtn.wire1Sensors=pollWire1()
     rtn.GPIOsettings=pollGPIO()
     # ZigbeePoll()
@@ -56,6 +56,7 @@ def pollWire1() -> list[wire1.Status]:
                                  measurement=enums.SensorMeasurement.c, 
                                  platform=enums.SensorPlatform.wire1, 
                                  value=sensorVal,
+                                 name=getW1name(SID[3:]),
                                  description=getDescriptions('W1_S'+SID[3:])
                         )  
                 if sensorVal == 85:    w1.read=enums.SensorStatus.warning
@@ -161,6 +162,10 @@ def getDescriptions(pinW1) -> str:
     for relay in getJSONconfig().SensorHubs.Relays:
         if str(pinW1) in relay['pin'] : return relay['Description']
     return ""
+
+def getW1name(pinW1) -> str:
+    if str(pinW1) in getJSONconfig().SensorHubs.Sensors : return getJSONconfig().SensorHubs.Sensors[pinW1]
+    return pinW1
 
 # Control GPIO Pins 
 def GPIOread(pinReq:gpio.PinChange) -> gpio.PinChange:
