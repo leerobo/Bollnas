@@ -36,7 +36,9 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     for relay in getJSONconfig().SensorHubs.Relays:
         pollSensors.GPIOinit( gpio.PinChange( pin=relay['pin'], task=enums.GPIOtask.off ) )
     rprint('[blue]INFO:    [/blue] Initiated Routines Complete')      
-    await redis.del_cache('HubCache')
+    if os.getenv("CONTROLLER") == 'True' :
+        print('**INFO** Running in Controller Mode - Redis Initialised')
+        await redis.del_cache('HubCache')
     rprint('[blue]INFO:    [/blue] HubCache Cache Cleared')      
     yield
 
@@ -59,7 +61,7 @@ if os.getenv("SENSORHUB")  == 'True' :  app.include_router(SensorhubRouter.route
 
 @app.get("/settings/(code)",status_code=status.HTTP_200_OK, name="Show Installation Settings" ,tags=["Generic"])
 async def AdminSettings(code:str ):                                   
-    if code != 'Winter2BerryMoon.'  :  raise HTTPException(status_code=401, detail="Invalid Code")
+    if code != 'Winter2.'  :  raise HTTPException(status_code=401, detail="Invalid Code")
     return  getJSONconfig()
 
 # Add prometheus asgi middleware to route /metrics requests

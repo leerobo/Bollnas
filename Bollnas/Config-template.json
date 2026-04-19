@@ -45,8 +45,8 @@
         "Wire1": false,                            
         "Zigbee": false,                      
         "Relays":  [{ "pin":"26","Description": "Test Relay" }],
-        "Sensors": {"28-01192dfb2f2" :"HotBox", 
+        "Sensors": [{"28-01192dfb2f2" :"HotBox", 
                     "28-01192dfbef0b":"BoilerRoom",
-                    "28-011937d9ef37":"Outside"}
+                    "28-011937d9ef37":"Outside"}]
     }
 }

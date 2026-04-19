@@ -1,14 +1,14 @@
-fastapi[standard]==0.115.6
-prometheus_client==0.21.1
-pydantic==2.9.2
-pydantic-settings==2.6.1
-pydantic_core==2.23.4
-pynetgear==0.10.10
-redis==5.2.1
-rich==13.9.4
+fastapi[standard]>=0.115.6
+prometheus_client>=0.21.1
+pydantic>=2.9.2
+pydantic-settings>=2.6.1
+pydantic_core>=2.23.4
+pynetgear>=0.10.10
+redis>=5.2.1
+rich>=13.9.4
 #RPi.GPIO==0.7.1
-rtoml==0.11.0
+rtoml>=0.11.0
 SQLAlchemy>=2.0.36
-Mock.GPIO==0.1.10
-uvicorn==0.32.0
+Mock.GPIO>=0.1.10
+uvicorn>=0.32.0
 
