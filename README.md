@@ -45,13 +45,23 @@ docker run -d \
 You might need to install pip first
 sudo apt install pip 
 
-Create a Venv area on the RPI and download required packages
+Create a Venv area on the RPI and download required packages, take awhile so go get a coffee
 ``` bash
 sudo python3 -m venv venv
 sudo chown pi:pi venv -R
 source  venv/bin/activate
+sudo apt install -y python3-dev build-essential
 python3 -m pip install -r requirements.txt
 ```
+
+if your having problems with fastapi install try this
+
+``` bash
+sudo apt install -y python3-dev build-essential
+pip install --upgrade pip setuptools wheel
+pip install fastapi uvicorn fastapi.cli
+```
+
 
 ### Config 
 there is a Config.json templete that is loaded into ConfigLoad.py 
@@ -87,6 +97,8 @@ Relays holds a list of pins & Descriptions,  when the system starts up the pins 
 ### Run 
 #### direct
 
+
+rename runx.sh to run.sh and amend to fit your install 
 ``` bash
 cd Bollnas
 ./run.sh controller        # As a controller   
