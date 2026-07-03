@@ -164,10 +164,7 @@ def getDescriptions(pinW1) -> str:
     return ""
 
 def getW1name(pinW1) -> str:
-    print('PIN  :',pinW1)
-    print('Sensors :',getJSONconfig().SensorHubs.Sensors[0])
     if pinW1 in getJSONconfig().SensorHubs.Sensors[0]:
-        print('Name :',getJSONconfig().SensorHubs.Sensors[0][pinW1])
         return getJSONconfig().SensorHubs.Sensors[0][pinW1]
         
     #for sensors in getJSONconfig().SensorHubs.Sensors:

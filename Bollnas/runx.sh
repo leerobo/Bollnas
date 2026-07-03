@@ -22,6 +22,4 @@ if [ "$1" != "noupdate" ] && [ "$2" != "noupdate" ]; then
 fi    
 
 export ROOTPATH="/root/Bollnas"
-
-# $ROOTPATH/venv/bin/python3 $ROOTPATH/venv/bin/fastapi dev $ROOTPATH/Bollnas/runapp.py --port 14121 --host 0.0.0.0
-python3 $ROOTPATH/venv/bin/fastapi dev $ROOTPATH/Bollnas/runapp.py --port 14121 --host 0.0.0.0
+$ROOTPATH/venv/bin/python3 $ROOTPATH/venv/bin/fastapi dev $ROOTPATH/Bollnas/runapp.py --port 14121 --host 0.0.0.0

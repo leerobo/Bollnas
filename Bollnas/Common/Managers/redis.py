@@ -6,7 +6,15 @@ from Common.ConfigLoad import getJSONconfig
 import datetime,json
 from rich import print as rprint
 
-r = redis.Redis(host='localhost', port=6379, db=0)
+try:
+    r = redis.Redis(host='localhost', port=6379, db=0)
+    r.ping()
+    rprint("[green]CNTL:     [/green][yellow]Redis Connection Established")
+except Exception as e:
+    rprint("[red]CNTL:     [/red][yellow]Redis Connection Error",e)
+    print(__name__,':init:',e)
+    
+# r = redis.Redis(host='localhost', port=6379, db=0)
 
 async def set_cache(data: object, keys='bollnas',dur=0):
     try:
