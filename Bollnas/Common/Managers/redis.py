@@ -6,7 +6,10 @@ from Common.ConfigLoad import getJSONconfig
 import datetime,json,time
 from rich import print as rprint
 
+r = None
+
 async def set_cache(data: object, keys='bollnas',dur=0):
+    if r == None : await connect_cache()
     try:
         if dur == 0 : dur = getJSONconfig().Cache.Timer
         rprint("[orange3]CNTL:     [/orange3][yellow]Cached",keys,'[yellow]for',dur,'[yellow]Seconds')
@@ -17,6 +20,7 @@ async def set_cache(data: object, keys='bollnas',dur=0):
     return
 
 async def get_cache(keys='bollnas') -> dict:
+    if r == None : await connect_cache()
     try:
        v = r.get(keys)
        if v is not None:
@@ -27,9 +31,11 @@ async def get_cache(keys='bollnas') -> dict:
        raise Exception(e)
 
 async def exists(key):
-     return r.exists(key)
+    if r == None : await connect_cache()
+    return r.exists(key)
 
 async def del_cache(key='SomeKey'):
+    if r == None : await connect_cache()
     rprint("[orange3]CNTL:     [/orange3][yellow]Deleted Cache Key",key)
     r.delete(key)
     return 
@@ -48,7 +54,7 @@ async def connect_cache():
             attempts -= 1
     return None
 
-r=connect_cache()
+# r = await connect_cache()
 # r = redis.Redis(host='localhost', port=6379, db=0)
 
 
