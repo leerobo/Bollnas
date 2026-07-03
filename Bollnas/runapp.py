@@ -35,7 +35,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     rprint('[blue]INFO:    [/blue] Initiated Routines Running')
     for relay in getJSONconfig().SensorHubs.Relays:
         pollSensors.GPIOinit( gpio.PinChange( pin=relay['pin'], task=enums.GPIOtask.off ) )
-    rprint('[blue]INFO:    [/blue] Initiated Routines Complete')      
+    rprint('[blue]INFO:    [/blue] GPIO Routines Complete')      
     if os.getenv("CONTROLLER") == 'True' :
         print('**INFO** Running in Controller Mode - Redis Initialised')
         await redis.del_cache('HubCache')

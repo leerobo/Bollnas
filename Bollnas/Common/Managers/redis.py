@@ -40,5 +40,6 @@ async def exists(key):
      return r.exists(key)
 
 async def del_cache(key='SomeKey'):
+    rprint("[orange3]CNTL:     [/orange3][yellow]Deleted Cache Key",key)
     r.delete(key)
     return 
