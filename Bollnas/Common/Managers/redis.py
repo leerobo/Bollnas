@@ -3,18 +3,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 # from Common.Models.cached import  Controller,Sensorhub,Sensor
 #from Bollnas.Common.zzzzzConfig import getConfig
 from Common.ConfigLoad import getJSONconfig
-import datetime,json
+import datetime,json,time
 from rich import print as rprint
-
-try:
-    r = redis.Redis(host='localhost', port=6379, db=0)
-    r.ping()
-    rprint("[green]CNTL:     [/green][yellow]Redis Connection Established")
-except Exception as e:
-    rprint("[red]CNTL:     [/red][yellow]Redis Connection Error",e)
-    print(__name__,':init:',e)
-    
-# r = redis.Redis(host='localhost', port=6379, db=0)
 
 async def set_cache(data: object, keys='bollnas',dur=0):
     try:
@@ -43,3 +33,22 @@ async def del_cache(key='SomeKey'):
     rprint("[orange3]CNTL:     [/orange3][yellow]Deleted Cache Key",key)
     r.delete(key)
     return 
+
+async def connect_cache():
+    attempts=10
+    while attempts > 0:
+        try:
+            r = redis.Redis(host='localhost', port=6379, db=0)
+            rprint("[green]CNTL:     [/green][yellow]Redis Connection Established")
+            return r
+        except Exception as e:
+            rprint("[red]CNTL:     [/red][yellow]Redis Connection Error",e)
+            print(__name__,':init:',e)
+            time.sleep(5)
+            attempts -= 1
+    return None
+
+r=connect_cache()
+# r = redis.Redis(host='localhost', port=6379, db=0)
+
+
