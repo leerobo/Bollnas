@@ -51,6 +51,8 @@ async def connect_cache():
     while attempts > 0:
         try:
             r = redis.Redis(host='localhost', port=6379, db=0)
+            print(r.ping())
+            print(r.info())
             rprint("[green]CNTL:     [/green][yellow]Redis Connection Established")
             return 
         except Exception as e:
