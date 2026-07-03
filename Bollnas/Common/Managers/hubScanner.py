@@ -38,7 +38,7 @@ def scan_lan() -> Hubs:
       Attached_list=[]
       netgear = Netgear(password=getJSONconfig().ControllerHub.Netgear_Pwd,host=getJSONconfig().ControllerHub.dns )
 
-      rprint("[orange3]CNTL:     [/orange3][yellow]Scanning Netgear Router[/yellow] ",getJSONconfig().ControllerHub.Netgear_Pwd, " @ ",getJSONconfig().ControllerHub.dns  )      
+      rprint("[orange3]CNTL:     [/orange3][yellow]Scanning Netgear Router[/yellow] ",getJSONconfig().ControllerHub.Netgear_Pwd[:1], "******** @ ",getJSONconfig().ControllerHub.dns  )      
       if netgear.login_try_port() :    
         for i in netgear.get_attached_devices_2():                        # namedTuple Device List
            #rprint(i)
